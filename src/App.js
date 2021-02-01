@@ -1,14 +1,20 @@
 import React from 'react';
 import './App.css';
 
-import Header from './Header';
+import Header from './header/Header';
 
 function App() {
   return (
     <div className="App">
-      <h1>Hello JayEom</h1>
-
       <Header />
+      
+      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
+      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
+      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
+      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
+      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
+      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
+
     </div>
   );
 }
