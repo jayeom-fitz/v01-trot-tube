@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
 
-import Header from './header/Header';
-import Sidebar from './sidebar/Sidebar';
-import RecommendedVideos from './videos/RecommendedVideos';
+import Header from './components/header/Header';
+import Sidebar from './components/sidebar/Sidebar';
+import RecommendedVideos from './components/videos/RecommendedVideos';
 
 function App() {
   return (
