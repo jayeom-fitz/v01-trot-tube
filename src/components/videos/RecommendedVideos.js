@@ -6,7 +6,7 @@ import VideoCard from './VideoCard'
 function RecommendedVideos() {
   return (
     <div className="recommendedVideos">
-      <h1>Recommended</h1>
+      <h2>Recommended</h2>
       <div className="recommendedVideos__videos">
         <VideoCard 
           youtubeId="u-5KQ0Au_5A"
