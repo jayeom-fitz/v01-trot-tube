@@ -1,27 +1,22 @@
 import React from 'react';
 import './App.css';
 
-import Header from './components/header/Header';
-import Sidebar from './components/sidebar/Sidebar';
-import RecommendedVideos from './components/videos/RecommendedVideos';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+import Home from './routes/Home'
 
 function App() {
   return (
     <div className="App">
-      <Header />
+      <Router>
+        <Switch>
+          <Route path="/search">
+            <h1>Search</h1>
+          </Route>
 
-      <div className="app__page">
-        <Sidebar />
-        <RecommendedVideos />
-      </div>
-
-      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
-      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
-      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
-      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
-      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
-      <h1>Hello JayEom</h1><h1>Hello JayEom</h1><h1>Hello JayEom</h1>
-
+          <Route path="/" component={Home} />
+        </Switch>
+      </Router>
     </div>
   );
 }
