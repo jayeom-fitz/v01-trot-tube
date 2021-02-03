@@ -19,7 +19,7 @@ function App() {
           <Sidebar />
 
           <Switch>
-            <Route path="/search/:searchTerm">
+            <Route path="/search/:searchContent">
               <SearchVideos />
             </Route>
 

@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 0 20px 0 20px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -30,12 +30,33 @@
 .header__input > input {
   flex: 1;
   border: none;
+  height: 28px;
+}
+
+.header__input > input:focus {
+  outline: 2px solid lightskyblue;
+}
+
+.header__inputButtonLink {
+  display: flex;
+  width: 50px !important;
+  height: 30px;
+  border-left: 1px solid lightgray;
+  align-items: center;
+}
+
+.header__inputButtonLink:focus {
+  outline: none;
+  background-color: darkgray;
+}
+
+.header__inputButtonLink:hover {
+  background-color: darkgray;
 }
 
 .header__inputButton {
-  width: 50px !important;
-  background-color: #fafafa;
-  border-left: 1px solid lightgray;
+  width: 100% !important;
+  height: 24px;
   color: gray;
 }
 

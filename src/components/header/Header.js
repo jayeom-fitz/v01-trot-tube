@@ -35,7 +35,7 @@ function Header() {
           value={inputSearch}
           onChange={e => setInputSearch(e.target.value)}
         />
-        <Link to={`/search/${inputSearch}`}>
+        <Link to={inputSearch && `/search/${inputSearch}`} className="header__inputButtonLink">
           <SearchIcon className="header__inputButton"/>
         </Link>
       </div>
