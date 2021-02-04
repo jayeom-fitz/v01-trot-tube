@@ -6,8 +6,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Header from './components/header/Header';
 import Sidebar from './components/sidebar/Sidebar';
 
-import RecommendedVideos from './components/videos/RecommendedVideos';
-import SearchVideos from './components/videos/SearchVideos';
+import RecommendedVideos from './components/home/RecommendedVideos';
+import SearchVideos from './components/search/SearchVideos';
 
 function App() {
   return (
