@@ -5,9 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from '../routes/Home'
 import Auth from '../routes/Auth'
 
-function AppRouter() {
-  const [isLogin, setIsLogin] = useState(false);
-
+function AppRouter({ isLogin }) {
   return (
     <Router>
       <Switch>
