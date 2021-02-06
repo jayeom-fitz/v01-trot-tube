@@ -1,10 +1,13 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import * as firebase from 'firebase/app'
+
 const firebaseConfig = {
-  apiKey: "AIzaSyA0XmBrvAuJu4FTivOgfZ7I4ruPLHMKFVk",
-  authDomain: "trot-tube-208f2.firebaseapp.com",
-  projectId: "trot-tube-208f2",
-  storageBucket: "trot-tube-208f2.appspot.com",
-  messagingSenderId: "132359603891",
-  appId: "1:132359603891:web:fd8ad77e2d6c4f51c292c6",
-  measurementId: "G-K4RJSWWGND"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
+
+export default firebase.initializeApp(firebaseConfig);
