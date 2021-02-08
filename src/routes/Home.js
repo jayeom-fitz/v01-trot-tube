@@ -4,10 +4,10 @@ import Header from '../components/header/Header'
 import RecommendedVideos from '../components/home/RecommendedVideos'
 import Sidebar from '../components/sidebar/Sidebar'
 
-function Home() {
+function Home(props) {
   return (
     <div>
-      <Header />
+      <Header user={props.user}/>
 
       <div style={{display: 'flex'}}>
         <Sidebar />

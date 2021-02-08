@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import AppRouter from './Router'
-import { authService } from '../fbase'
+
+import firebase from 'firebase'
 
 function App() {
-  const [isLogin, setIsLogin] = useState(authService.currentUser);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [userObj, setUserObj] = useState(firebase.auth().currentUser);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if(user) {
+        const userObject = {
+          uid : user.uid,
+          name : user.displayName,
+          image : user.photoURL
+        };
+        setUserObj(userObject);
+      } 
+      setIsLoaded(true);
+    });
+  }, []);
 
   return (
-    <AppRouter isLogin={isLogin} />
+    <>
+      {isLoaded ? <AppRouter user={userObj} /> 
+        : null}
+    </>
   );
 }
 

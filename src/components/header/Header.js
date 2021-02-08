@@ -9,10 +9,10 @@ import VideoCallIcon from "@material-ui/icons/VideoCall";
 import AppsIcon from "@material-ui/icons/Apps";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 
-import Avatar from "@material-ui/core/Avatar";
+import UserIcon from './UserIcon';
 
 
-function Header() {
+function Header(props) {
   const [inputSearch, setInputSearch] = useState('');
 
   return (
@@ -45,11 +45,7 @@ function Header() {
         <AppsIcon className="header__icon"/>
         <NotificationsIcon className="header__icon"/>
         
-        <Avatar 
-          className=""
-          src="https://d3nfwcxd527z59.cloudfront.net/content/uploads/2020/11/13093616/Bruno-Fernandes-Manchester-United-9.jpg"
-          alt=""
-        />
+        <UserIcon user={props.user}/>
       </div>
     </div>
   )

@@ -1,13 +1,7 @@
 {
   "short_name": "TrotTube",
   "name": "Trot-Tube with React App",
-  "icons": [
-    {
-      "src": "image/logo-tt.png",
-      "type": "image/png",
-      "sizes": "168x168"
-    }
-  ],
+  "icons": [],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
