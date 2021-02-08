@@ -9,13 +9,11 @@ function AppRouter({ user }) {
   return (
     <Router>
       <Switch>
-        {user ? (
-          <Route exact path="/" >
-            <Home user={user} />
-          </Route>
-        ):(
-          <Route path="/" component={Auth}/>
-        )}
+        <Route exact path="/" >
+          <Home user={user} />
+        </Route>
+        
+        <Route path="/login" component={Auth}/>
       </Switch>
     </Router>
   )
