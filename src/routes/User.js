@@ -1,20 +1,23 @@
 import React from 'react'
+import { useParams } from "react-router-dom";
 
 import Header from '../components/header/Header'
-import RecommendedVideos from '../components/contents/home/RecommendedVideos'
 import Sidebar from '../components/sidebar/Sidebar'
+import UserInfo from '../components/contents/info/user/UserInfo'
 
-function Home(props) {
+function User(props) {
+  const { uid } = useParams();
+
   return (
     <div>
       <Header user={props.user}/>
 
       <div style={{display: 'flex'}}>
         <Sidebar />
-        <RecommendedVideos />
+        <UserInfo uid={uid} />
       </div>
     </div>
   )
 }
 
-export default Home
+export default User

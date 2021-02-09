@@ -18,7 +18,9 @@ function UserIcon(props) {
               onClick={() => document.getElementById("userIcon__dropdown").classList.toggle("userIcon__dropdownShow")}
             />
           <div id="userIcon__dropdown" className="userIcon__dropdown">
-            <span className="userIcon__content">내 정보</span>
+            <Link to={`/user/${props.user.uid}`} style={{textDecoration:'none'}}>
+              <span className="userIcon__content">내 정보</span>
+            </Link>
             <span 
               className="userIcon__content"
               onClick={() => {
