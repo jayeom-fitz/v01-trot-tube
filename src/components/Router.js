@@ -3,8 +3,7 @@ import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Home from '../routes/Home'
-import Auth from '../routes/Auth'
-import User from '../routes/User';
+import Login from '../routes/Login'
 
 function AppRouter({ user }) {
   return (
@@ -12,9 +11,9 @@ function AppRouter({ user }) {
       <Switch>
         <Route exact path="/" ><Home user={user} /></Route>
         
-        <Route path="/login" component={Auth}/>
-
-        <Route path="/user/:uid" ><User user={user} /></Route>
+        <Route path="/login" component={Login}/>
+        
+        <Route path="/user/:uid" ><Home user={user} pageName='user' /></Route>
       </Switch>
     </Router>
   )
