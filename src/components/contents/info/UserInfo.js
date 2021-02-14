@@ -24,25 +24,53 @@ function UserInfo(props) {
     getUserInfo();
   }, [uid])
 
+  function changeDateFormat(str) {
+    const date = str.split(" ");
+    let ret = date[3];
+    const month = date[1];
+
+    switch(month) {
+      case 'Jan' : ret += '-01-'; break;
+      case 'Feb' : ret += '-02-'; break;
+      case 'Mar' : ret += '-03-'; break;
+      case 'Apr' : ret += '-04-'; break;
+      case 'May' : ret += '-05-'; break;
+      case 'Jun' : ret += '-06-'; break;
+      case 'Jul' : ret += '-07-'; break;
+      case 'Aug' : ret += '-08-'; break;
+      case 'Sep' : ret += '-09-'; break;
+      case 'Oct' : ret += '-10-'; break;
+      case 'Nov' : ret += '-11-'; break;
+      case 'Dec' : ret += '-12-'; break;
+    }
+
+    return ret + date[2];
+  }
+
   return (
     <>
       {loaded ? (
-        <Container>
-          <UserRow>
-
-            <UserAvatar 
-              src={userInfo.photoURL}
-              alt=""
-            />
-            <Content>
-              <UserName>
-                {userInfo.nickname} 
-                {userInfo.verified ? <FcApprove size='24'/> : null}
-              </UserName> 
-              <JoinDate>{Date(userInfo.joinDate)}</JoinDate>
-            </Content>
-          </UserRow>
-        </Container>
+        <>
+        {userInfo ? (
+          <Container>
+            <UserRow>
+              <UserAvatar 
+                src={userInfo.photoURL}
+                alt=""
+              />
+              <Content>
+                <UserName>
+                  {userInfo.nickname} 
+                  {userInfo.verified ? <FcApprove size='24'/> : null}
+                </UserName> 
+                <JoinDate>가입일 : {changeDateFormat(Date(userInfo.joinDate).toString())}</JoinDate>
+              </Content>
+            </UserRow>
+          </Container>
+        ) : (
+          <>no user</>
+        )}
+        </>
       ) : null}
     </>
     

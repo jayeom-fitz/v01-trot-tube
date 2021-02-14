@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import Header from '../components/header/Header'
 import Sidebar from '../components/sidebar/Sidebar'
@@ -7,10 +7,6 @@ import RecommendedVideos from '../components/contents/home/RecommendedVideos'
 import UserInfo from '../components/contents/info/UserInfo'
 
 function Home(props) {
-  const [displaySidebar, setDisplaySidebar] = useState(false);
-
-  const toggleSidebar = () => setDisplaySidebar(!displaySidebar);
-
   const switchPage = (prop) => {
     switch(prop) {
       case 'user' : return <UserInfo />
@@ -20,10 +16,10 @@ function Home(props) {
 
   return (
     <div>
-      <Header user={props.user} toggleSidebar={toggleSidebar}/>
+      <Header user={props.user} />
 
       <div style={{display: 'flex'}}>
-        {displaySidebar ? <Sidebar /> : null}
+        <Sidebar />
         {switchPage(props.pageName)}
       </div>
     </div>

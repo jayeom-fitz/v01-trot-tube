@@ -15,11 +15,11 @@ function Header(props) {
   return (
     <Container>
       <ContainerLeft>
-        <FiMenu 
-          size="24"
-          onClick={props.toggleSidebar} 
-          style={{cursor:'pointer'}}
-        />
+        <FiMenuIcon 
+          onClick={() => {
+            document.getElementById("sidebar").style.left = "0px";
+          }} 
+          size='24' />
         <Link to="/">
           <Logo src="/images/logo-trottube.png" />
         </Link>
@@ -71,6 +71,13 @@ const Logo = styled.img`
   height: 40px;
   object-fit: contain;
   padding: 20px;
+`
+const FiMenuIcon = styled(FiMenu)`
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+  }
 `
 const FiSearchIcon = styled(FiSearch)`
   width: 100% !important;
