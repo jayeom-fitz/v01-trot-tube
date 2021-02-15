@@ -25,7 +25,7 @@ function Login() {
         nickname : data.user.displayName,
         photoURL : data.user.photoURL,
         joinDate : Date.now(),
-        verified : false,
+        verified : 0,
       });
     }   
   }

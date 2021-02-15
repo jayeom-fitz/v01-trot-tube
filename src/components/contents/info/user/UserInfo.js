@@ -3,17 +3,21 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
 
-import { storeService } from '../../../fbase'
+import { storeService } from '../../../../fbase'
 
 import Avatar from "@material-ui/core/Avatar";
 import { FcApprove } from 'react-icons/fc'
+import { GoGear } from 'react-icons/go'
+
+import UserEdit from './UserEdit';
 
 function UserInfo(props) {
   const { uid } = useParams();
   
   const [loaded, setLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
-  
+  const [edit, setEdit] = useState(false);
+
   useEffect(() => {
     async function getUserInfo() {
       await storeService.collection('users').doc(uid).get().then(function(doc) {
@@ -42,9 +46,13 @@ function UserInfo(props) {
       case 'Oct' : ret += '-10-'; break;
       case 'Nov' : ret += '-11-'; break;
       case 'Dec' : ret += '-12-'; break;
+      default : ret += '-XX-'; break;
     }
-
     return ret + date[2];
+  }
+
+  function toggleUserEdit() {
+    setEdit(!edit);
   }
 
   return (
@@ -61,26 +69,28 @@ function UserInfo(props) {
               <Content>
                 <UserName>
                   {userInfo.nickname} 
-                  {userInfo.verified ? <FcApprove size='24'/> : null}
+                  {userInfo.verified === 1 ? <FcApprove size='24'/> : null}
+                  {props.user && userInfo.uid === props.uid ? 
+                    <GoGear 
+                      onClick={toggleUserEdit}
+                      size='18' style={{cursor:'pointer'}} /> : null}
                 </UserName> 
                 <JoinDate>가입일 : {changeDateFormat(Date(userInfo.joinDate).toString())}</JoinDate>
               </Content>
             </UserRow>
+            {edit ? <UserEdit user={props.user} toggleUserEdit={toggleUserEdit} /> : null}
           </Container>
-        ) : (
-          <>no user</>
-        )}
+        ) : null}
         </>
       ) : null}
     </>
-    
   )
 }
 
 export default UserInfo
 
 const Container = styled.div`
-  flex: 0.8;
+  flex: 1;
   background-color: #f9f9f9;
   padding: 0px 10px;
   padding-bottom: 0;
@@ -89,6 +99,7 @@ const UserRow = styled.div`
   display: flex;
   align-items: center;
   width: 70%; 
+  margin: auto;
 `
 const UserAvatar = styled(Avatar)`
   height: 120px !important;
