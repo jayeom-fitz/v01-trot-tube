@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { storeService } from "../../../../fbase";
 
 function UserEdit(props) {
-  const [nickname, setNickname] = useState(props.user.name);
-  const [photoURL, setPhotoURL] = useState(props.user.image);
+  const [nickname, setNickname] = useState(props.user.nickname);
+  const [photoURL, setPhotoURL] = useState(props.user.photoURL);
 
   const onSubmit = async () => {
     var space = 0;
@@ -15,7 +15,7 @@ function UserEdit(props) {
     } 
     if(nickname === "" || space !== 0 || nickname.length >= 14) return;
 
-    await storeService.collection("users").doc(props.user.uid).set({
+    await storeService.collection("users").doc(props.user.uid).update({
       nickname,
       photoURL
     });

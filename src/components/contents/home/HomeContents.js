@@ -4,10 +4,10 @@ import styled from "styled-components";
 
 import TvPrograms from './TvPrograms'
 
-function HomeContents() {
+function HomeContents(props) {
   return (
     <Container>
-      <TvPrograms />
+      <TvPrograms user={props.user}/>
     </Container>
   )
 }

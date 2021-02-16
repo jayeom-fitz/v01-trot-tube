@@ -10,7 +10,7 @@ function Home(props) {
   const switchPage = (prop) => {
     switch(prop) {
       case 'user' : return <UserInfo user={props.user} />
-      default : return <HomeContents />
+      default : return <HomeContents user={props.user} />
     }
   }
 

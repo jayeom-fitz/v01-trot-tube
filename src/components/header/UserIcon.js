@@ -28,7 +28,7 @@ function UserIcon(props) {
         <Container>
           <Avatar 
             onClick={() => onIconClick()}
-            src={props.user.image}
+            src={props.user.photoURL}
             alt=""
             style={{cursor:'pointer', border:'1px solid lightgrey'}}
           />
