@@ -25,7 +25,7 @@ function TvPrograms(props) {
     <Container>
       {props.user && props.user.verified === 2 ? (
         <EditBar>
-          <Link to='/edit/tv' >
+          <Link to={`/admin/${`tvProgramsSlider`}`} >
             <GoGear size='24' color='black'/>
           </Link>
         </EditBar>
@@ -52,7 +52,7 @@ export default TvPrograms
 
 const Container = styled.div`
   width: 600px;
-  height: 220px;
+  height: 240px;
   margin: 10px auto;
 `
 const EditBar = styled.div`

@@ -1,4 +1,4 @@
-import React, {  } from 'react'
+import React from 'react'
 
 import { authService } from '../../fbase'
 
@@ -9,10 +9,12 @@ import Avatar from "@material-ui/core/Avatar";
 
 function UserIcon(props) { 
   const onIconClick = () => {
-    if(document.getElementById("userIcon__dropdown").style.display === 'none') {
-      document.getElementById("userIcon__dropdown").style.display='block';
+    const ref = document.getElementById("userIcon__dropdown");
+    
+    if(ref.style.display === 'none' || ref.style.display === '') {
+      ref.style.display='block';
     } else {
-      document.getElementById("userIcon__dropdown").style.display='none';
+      ref.style.display='none';
     }
   }
 
