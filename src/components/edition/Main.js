@@ -1,11 +1,17 @@
 import React from 'react'
 
+import styled from 'styled-components';
+
 function Main() {
   return (
-    <div>
+    <Container>
       Main
-    </div>
+    </Container>
   )
 }
 
 export default Main
+
+const Container = styled.div`
+  width: 100%;
+`
