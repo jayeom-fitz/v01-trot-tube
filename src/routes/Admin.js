@@ -6,7 +6,9 @@ import styled from 'styled-components';
 import Sidebar from '../components/edition/sidebar/Sidebar'
 
 import Main from '../components/edition/Main'
-import TvProgramsSlider from '../components/edition/TvProgramsSlider';
+
+import TvProgram from '../components/edition/tv-program/TvProgram';
+import TvProgramsSlider from '../components/edition/tv-program/TvProgramsSlider';
 
 function Admin(props) {
   const { startComponent } = useParams();
@@ -17,15 +19,18 @@ function Admin(props) {
 
   const switchComponent = (prop) => {
     switch(prop) {
-      case 'tvProgramsSlider' : return <TvProgramsSlider />
+      case 'tv-program' : return <TvProgram />
+      case 'tv-program-slider' : return <TvProgramsSlider />
       default : return <Main user={props.user} />
     }
   }
 
   return (
-    <div style={{display:'flex',flexDirection:'row'}}>
-      <Sidebar user={props.user} />
-      <Main user={props.user} />
+    <div>
+      <Sidebar user={props.user}/>
+      <div style={{top:'0',marginLeft:'200px'}}>
+        {switchComponent(startComponent)}
+      </div>
     </div>
   )
 }

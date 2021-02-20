@@ -25,7 +25,7 @@ function TvPrograms(props) {
     <Container>
       {props.user && props.user.verified === 2 ? (
         <EditBar>
-          <Link to={`/admin/${`tvProgramsSlider`}`} >
+          <Link to={`/admin/${`tv-program-slider`}`} >
             <GoGear size='24' color='black'/>
           </Link>
         </EditBar>

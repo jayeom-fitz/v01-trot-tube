@@ -23,8 +23,11 @@ export default Sidebar
 
 const Container = styled.div`
   position: fixed;
+  top: 0;
+  left: 0;
   width: 200px;
   height: 100%;
+  z-index: 1;
   background-color: #413630;
   text-align: center;
 `

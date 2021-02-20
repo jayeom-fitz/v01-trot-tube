@@ -3,7 +3,7 @@ import React from 'react'
 function TvProgramsSlider() {
   return (
     <div>
-      Main
+      TvProgramsSlider
     </div>
   )
 }
