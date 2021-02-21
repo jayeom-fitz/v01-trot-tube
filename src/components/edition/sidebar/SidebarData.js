@@ -3,6 +3,7 @@ import React from 'react'
 export const SidebarData = [
   {
     title: '유저',
+    path: '#',
     subNav: [
       {
         title: '유저 관리',
@@ -12,6 +13,7 @@ export const SidebarData = [
   },
   {
     title: 'TV 프로그램',
+    path: '#',
     subNav: [
       {
         title: 'TV 프로그램 관리',
@@ -25,6 +27,7 @@ export const SidebarData = [
   },
   {
     title: '인물 관리',
+    path: '#',
     subNav: [
       {
         title: '인물 정보',
