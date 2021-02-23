@@ -49,7 +49,8 @@ const TvProgramEdit = (props) => {
         } else {
           docRef.set({
             title, image, year, channel,
-            likes : 0
+            likes : 0, 
+            sliderIndex : 0
           });
           document.getElementById("tvEdit").style.display = "none";
           {props.valueUp()}

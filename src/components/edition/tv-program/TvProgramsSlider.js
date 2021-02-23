@@ -10,27 +10,24 @@ import { AiFillLeftSquare,
          AiFillUpSquare } from 'react-icons/ai'
 
 function TvProgramsSlider() {
-  const [loaded, setLoaded] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   const [lefts, setLefts] = useState([]);
   const [rights, setRights] = useState([]);
 
   useEffect(() => {
     async function getTvPrograms() {
-      var tvPrograms = [];
+      let arr = [];
       await storeService.collection('tv-programs').get().then(function (snapshot) {
-        let arr = [];
-        snapshot.forEach(doc => arr.push({...doc.data(), id: doc.id}));
-        tvPrograms = [...arr]; 
-      })
+        snapshot.forEach(doc => arr.push({...doc.data(), id: doc.id, checked: false}));
+      });
 
-      var homeSlider = [];
-      await storeService.collection('admin').doc('home-slider').get().then(function (snapshot) {
-        console.log(snapshot.docs);
-        if(snapshot.docs === undefined) {
-          console.log('무야호')
-        }
-      })
+      setLefts([...arr.filter(v => v.sliderIndex === 0)]);
+      setRights([...arr.filter(v => v.sliderIndex !== 0).sort(function (a, b) {
+        return a.sliderIndex - b.sliderIndex;
+      })]);
+      
+      setLoaded(true);
     }
 
     getTvPrograms();
@@ -38,18 +35,18 @@ function TvProgramsSlider() {
 
   const onCheckClick = e => {
     const id = e.target.id;
-    const idx = parseInt(id.substring(1));
+    const pid = id.substring(1);
 
     if(id[0] === 'L') {
       setLefts(
         lefts.map(v =>
-          v.index === idx ? { ...v, checked: !v.checked } : v
+          v.id === pid ? { ...v, checked: !v.checked } : v
         )
       );
     } else {
       setRights(
         rights.map(v =>
-          v.index === idx ? { ...v, checked: !v.checked } : v
+          v.id === pid ? { ...v, checked: !v.checked } : v
         )
       );
     }
@@ -97,12 +94,11 @@ function TvProgramsSlider() {
             <SliderContainer>
               <Box>
                 {lefts.map((v) => 
-                  <Content 
-                    key={`L${v.index}`}
-                    id={`L${v.index}`} 
-                    onClick={onCheckClick}
-                    active={v.checked}
-                    >{v.value}
+                  <Content key={`L${v.id}`} active={v.checked}>
+                    <Image 
+                      onClick={onCheckClick}
+                      id={`L${v.id}`} alt=""
+                      src={v.image} />
                   </Content>)}
               </Box>
               <ButtonBox>
@@ -111,12 +107,11 @@ function TvProgramsSlider() {
               </ButtonBox>
               <Box>
                 {rights.map((v) => 
-                  <Content 
-                    key={`R${v.index}`} 
-                    id={`R${v.index}`} 
-                    onClick={onCheckClick}
-                    active={v.checked}
-                    >{v.value}
+                  <Content key={`R${v.id}`} active={v.checked}>
+                    <Image 
+                      onClick={onCheckClick}
+                      id={`R${v.id}`} alt=""
+                      src={v.image} />
                   </Content>)}
               </Box>
               <ButtonBox>
@@ -145,7 +140,7 @@ const SliderContainer = styled.div`
 `
 const Box = styled.div`
   flex: 0.5;
-  border: 1px solid black;
+  border: 1px solid lightgrey;
   margin: 10px;
 `
 const ButtonBox = styled.div`
@@ -154,10 +149,18 @@ const ButtonBox = styled.div`
   justify-content: center;
 `
 const Content = styled.div`
-  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  
+  transition: 0.8s;
   ${({active}) => active && `
-    border: 2px solid red;
+    background-color: lightgrey;
   `};
+`
+const Image = styled.img`
+  width: 50%;
+  height: 50%;
+  cursor: pointer;
 `
 const LeftArrow = styled(AiFillLeftSquare)`
   display: flex;
