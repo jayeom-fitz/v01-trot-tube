@@ -102,7 +102,7 @@ const Container = styled.div`
   padding: 40px;
 `
 const Title = styled.h1`
-
+  margin: 0;
 `
 const TvContainer = styled.div`
 
