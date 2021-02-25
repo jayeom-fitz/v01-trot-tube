@@ -69,10 +69,10 @@ function TvProgramsSlider() {
     const id = e.target.id;
     if(rights.length === 0) return;
     var arr = rights.slice();
-
+    var i;
     if(id[0] === 'U') {
       if(rights[0].checked) return;
-      for(var i=1; i<arr.length; i++) {
+      for(i=1; i<arr.length; i++) {
         if(arr[i].checked) {
           const v = arr[i - 1];
           arr[i - 1] = arr[i];
@@ -81,7 +81,7 @@ function TvProgramsSlider() {
       }
     } else {
       if(rights[rights.length - 1].checked) return;
-      for(var i=arr.length-2; i>=0; i--) {
+      for(i=arr.length-2; i>=0; i--) {
         if(arr[i].checked) {
           const v = arr[i + 1];
           arr[i + 1] = arr[i];
