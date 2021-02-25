@@ -18,6 +18,10 @@ function AppRouter(props) {
           path="/user/:uid"
           render={() => <Home user={props.user} pageName='user'/>}/>
 
+        <Route 
+          path="/tv/:tpid"
+          render={() => <Home user={props.user} pageName='tv-program'/>}/>
+
         <Route exact path="/admin/" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent" ><Admin user={props.user} /></Route>
       </Switch>
