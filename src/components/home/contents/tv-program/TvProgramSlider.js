@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from "styled-components"
 
-import { storeService } from "../../../fbase";
+import { storeService } from "src/fbase";
 
 import Slider from 'react-slick'
 import "slick-carousel/slick/slick.css"
@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 
 import { GoGear } from 'react-icons/go'
 
-function TvPrograms(props) {
+function TvProgramSlider(props) {
   const [loaded, setLoaded] = useState(false);
   const [tvs, setTvs] = useState([]);
 
@@ -72,7 +72,7 @@ function TvPrograms(props) {
   )
 }
 
-export default TvPrograms
+export default TvProgramSlider
 
 const Container = styled.div`
   width: 600px;

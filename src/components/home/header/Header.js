@@ -8,7 +8,6 @@ import { IoNotifications } from 'react-icons/io5'
 
 import UserIcon from './UserIcon';
 
-
 function Header(props) {
   const [inputSearch, setInputSearch] = useState('');
 

@@ -3,16 +3,28 @@ import { useParams } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import { storeService } from '../../../fbase'
+import { storeService } from 'src/fbase'
 
 function TvProgram({props}) {
   const { tpid } = useParams();
 
+  useEffect(() => {
+    
+    
+  }, [tpid])
+
   return (
-    <div>
+    <Container>
       {tpid}
-    </div>
+    </Container>
   )
 }
 
 export default TvProgram
+
+const Container = styled.div`
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 0px 10px;
+  padding-bottom: 0;
+`

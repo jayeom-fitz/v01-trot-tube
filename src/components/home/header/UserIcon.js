@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { authService } from '../../fbase'
+import { authService } from 'src/fbase' 
 
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';

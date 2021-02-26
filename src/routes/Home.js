@@ -1,11 +1,12 @@
 import React from 'react'
 
-import Header from '../components/header/Header'
-import Sidebar from '../components/sidebar/Sidebar'
+import Header from '../components/home/header/Header'
+import Sidebar from '../components/home/sidebar/Sidebar'
 
-import HomeContents from '../components/contents/home/HomeContents'
-import UserInfo from '../components/contents/info/user/UserInfo'
-import TvProgram from '../components/contents/tv-program/TvProgram'
+import HomeContents from '../components/home/contents/HomeContents'
+import UserInfo from '../components/home/contents/user/UserInfo'
+
+import TvProgram from '../components/home/contents/tv-program/TvProgram'
 
 
 function Home(props) {

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 
 import styled from 'styled-components'
 
-import { storeService } from "../../../fbase";
+import { storeService } from "src/fbase"
 
 import TvProgramEdit from './TvProgramEdit'
+import TvProgramContent from './TvProgramContent'
 
 function TvProgram() {
   const [loaded, setLoaded] = useState(false);

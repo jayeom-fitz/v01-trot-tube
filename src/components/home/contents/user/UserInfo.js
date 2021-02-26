@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
 
-import { storeService } from '../../../../fbase'
+import { storeService } from 'src/fbase'
 
 import Avatar from "@material-ui/core/Avatar";
 import { FcApprove } from 'react-icons/fc'

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 
-import { storeService } from "../../../../fbase";
+import { storeService } from "src/fbase";
 
 function UserEdit(props) {
   const [nickname, setNickname] = useState(props.user.nickname);

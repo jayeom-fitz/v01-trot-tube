@@ -1,14 +1,13 @@
 import React from 'react'
 
 import { useParams } from "react-router-dom";
-import styled from 'styled-components';
 
-import Sidebar from '../components/edition/sidebar/Sidebar'
+import Sidebar from '../components/admin/sidebar/Sidebar'
 
-import Main from '../components/edition/Main'
+import Main from '../components/admin/Main'
 
-import TvProgram from '../components/edition/tv-program/TvProgram';
-import TvProgramsSlider from '../components/edition/tv-program/TvProgramsSlider';
+import TvProgram from '../components/admin/tv-program/TvProgram';
+import TvProgramSlider from '../components/admin/tv-program/TvProgramSlider';
 
 function Admin(props) {
   const { startComponent } = useParams();
@@ -20,7 +19,7 @@ function Admin(props) {
   const switchComponent = (prop) => {
     switch(prop) {
       case 'tv-program' : return <TvProgram />
-      case 'tv-program-slider' : return <TvProgramsSlider />
+      case 'tv-program-slider' : return <TvProgramSlider />
       default : return <Main user={props.user} />
     }
   }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import styled from 'styled-components';
 
-import { storeService } from "../../../fbase";
+import { storeService } from "src/fbase";
 
 import { ImCross } from 'react-icons/im'
 
@@ -132,7 +132,7 @@ const Body = styled.div`
 `
 const Container = styled.div`
   width: 70%;
-  height: 70%;
+  height: 90%;
   background-color: white;
 `
 const Content = styled.div`
@@ -176,8 +176,8 @@ const Text = styled.h4`
 `
 const Input = styled.input`
   flex: 0.8;
-  height: 20px;
-  margin-left: 10px;
+  height: 30px;
+  margin: 10px 10px;
   padding-left: 5px;
   border: 1px solid lightgrey;
 

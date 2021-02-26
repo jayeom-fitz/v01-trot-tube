@@ -2,12 +2,12 @@ import React from 'react'
 
 import styled from "styled-components";
 
-import TvPrograms from './TvPrograms'
+import TvProgramSlider from './tv-program/TvProgramSlider';
 
 function HomeContents(props) {
   return (
     <Container>
-      <TvPrograms user={props.user}/>
+      <TvProgramSlider user={props.user}/>
     </Container>
   )
 }
