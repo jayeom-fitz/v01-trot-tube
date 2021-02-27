@@ -14,7 +14,7 @@ const TvProgramEdit = (props) => {
   const [channel, setChannel] = useState('');
 
   useEffect(() => {
-    setTitle(''); setImage(''); setYear(''); setChannel('');
+    setPid(''); setTitle(''); setImage(''); setYear(''); setChannel('');
 
     async function getTvProgram() {
       await storeService.collection('tv-programs').doc(props.pid).get().then(function (doc) {

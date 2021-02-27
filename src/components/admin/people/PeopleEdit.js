@@ -13,7 +13,54 @@ function PeopleEdit(props) {
   const [image, setImage] = useState('');
   const [birth, setBirth] = useState('');
   const [company, setCompany] = useState('');
+
+  useEffect(() => {
+    setPid(''); setName(''); setImage(''); setBirth(''); setCompany('');
+
+    async function getPerson() {
+      await storeService.collection('people').doc(props.pid).get().then(function (doc) {
+        setName(doc.data().name);
+        setImage(doc.data().image);
+        setBirth(doc.data().birth);
+        setCompany(doc.data().company);
+      })
+    }
+
+    if(props.edit) {
+      setPid(props.pid);
+      getPerson();
+    }
+  }, [props.edit, props.pid])
   
+  const onSubmit = async () => {
+    if(!(props.edit || pid) || !image || !name || !birth || !company) {
+      alert('모든 값을 입력하세요.'); return;
+    }
+    
+    const docRef = storeService.collection('people').doc(pid);
+    if(props.edit) {
+      await docRef.update({
+        name, image, birth, company
+      });
+      props.valueUp();
+    } else {
+      await docRef.get().then(function(doc) {
+        if (doc.exists) {
+          alert("중복된 아이디입니다.");
+        } else {
+          docRef.set({
+            name, image, birth, company,
+            likes : 0
+          });
+          document.getElementById("personEdit").style.right = "-800px";
+          props.valueUp();
+        }
+      }).catch(function(error) {
+        alert("Error getting document:", error);
+      });
+    }    
+  }
+
   return (
     <Body id='personEdit'>
       <Container>
@@ -23,46 +70,47 @@ function PeopleEdit(props) {
           }}/>
         </CloseBar>
         
+
         <div style={{display: 'flex'}}>
-          <Title>인물 {props.edit ? '수정' : '생성' }</Title>
-          <InputBox>
-            <Button >{props.edit ? '수정' : '생성' }</Button>
+          <Title style={{flex: '0.7'}}>인물 {props.edit ? '수정' : '생성' }</Title>
+          <InputBox style={{flex: '0.3'}}>
+            <Button onClick={onSubmit}>{props.edit ? '수정' : '생성' }</Button>
           </InputBox>
         </div>
 
         <BoxContainer>
-            <Box flex='0.2'>
-              <StyledAvatar src={image} alt="" />
-            </Box>
+          <Box flex='0.3'>
+            <StyledAvatar src={image} alt="" />
+          </Box>
 
-            <Box flex='0.7'>
-              <InputBox>
-                <Text>아이디</Text>
-                <Input value={props.edit ? props.pid : pid} onChange={(v) => setPid(v.target.value)} readOnly={props.edit}/>
-              </InputBox>
+          <Box flex='0.7'>
+            <InputBox>
+              <Text>아이디</Text>
+              <Input value={props.edit ? props.pid : pid} onChange={(v) => setPid(v.target.value)} readOnly={props.edit}/>
+            </InputBox>
 
-              <InputBox>
-                <Text>이름</Text>
-                <Input value={name} onChange={(v) => setName(v.target.value)}/>
-              </InputBox>
+            <InputBox>
+              <Text>이름</Text>
+              <Input value={name} onChange={(v) => setName(v.target.value)}/>
+            </InputBox>
 
-              <InputBox>
-                <Text>이미지</Text>
-                <Input value={image} onChange={(v) => setImage(v.target.value)}/>
-              </InputBox>
+            <InputBox>
+              <Text>이미지</Text>
+              <Input value={image} onChange={(v) => setImage(v.target.value)}/>
+            </InputBox>
 
-              <InputBox>
-                <Text>생년월일</Text>
-                <Input value={birth} type="number" onChange={(v) => setBirth(v.target.value)}/>
-              </InputBox>
+            <InputBox>
+              <Text>생년월일</Text>
+              <Input value={birth} type="number" onChange={(v) => setBirth(v.target.value)}/>
+            </InputBox>
 
-              <InputBox>
-                <Text>소속사</Text>
-                <Input value={company} onChange={(v) => setCompany(v.target.value)}/>
-              </InputBox>
+            <InputBox>
+              <Text>소속사</Text>
+              <Input value={company} onChange={(v) => setCompany(v.target.value)}/>
+            </InputBox>
 
-            </Box>
-          </BoxContainer>
+          </Box>
+        </BoxContainer>
       </Container>
     </Body>
   )
@@ -109,8 +157,8 @@ const Box = styled.div`
   text-align: center;
 `
 const StyledAvatar = styled(Avatar)`
-  width: 100px !important;
-  height: 100px !important;
+  width: 200px !important;
+  height: 200px !important;
   margin: auto;
 `
 const InputBox = styled.div`

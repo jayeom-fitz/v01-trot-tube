@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { storeService } from "src/fbase"
 
 import PeopleEdit from './PeopleEdit';
+import PersonCard from './PersonCard';
 
 function People() {
   const [loaded, setLoaded] = useState(false);
@@ -19,14 +20,18 @@ function People() {
 
   useEffect(() => {
     async function getPeople() {
-      setLoaded(true);
+      await storeService.collection('people').get().then(function (snapshot) {
+        let arr = [];
+        snapshot.forEach(doc => arr.push({...doc.data(), id: doc.id}));
+        setPeople(arr); 
+        setLoaded(true);
+      })
     }
 
     getPeople();
   }, [value])
   
   const onEditButtonClick = (id) => {
-    
     setEdit(false); setPid('');
     if(id !== '') {
       setEdit(true); setPid(id);
@@ -40,13 +45,18 @@ function People() {
     <>
       {loaded ? 
         <div style={{width:'100%'}}>
-          <PeopleEdit pid={pid} edit={edit} v/>
+          <PeopleEdit pid={pid} edit={edit} valueUp={valueUp}/>
+
           <Container>
             <Title>인물 관리</Title>
 
             <div>
               <AddButton onClick={() => onEditButtonClick('')}>추가</AddButton>
-            
+              <PeopleCard>
+                {people.length === 0 ? <>등록된 인물이 없습니다</> :
+                  people.map((person) => <PersonCard key={person.id} personInfo={person} />)
+                }
+              </PeopleCard>
             </div>
           </Container>
         </div>
@@ -74,4 +84,10 @@ const AddButton = styled.button`
   &:hover {
     background-color: #007E33;
   }
+`
+const PeopleCard = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
 `
