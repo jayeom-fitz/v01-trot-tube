@@ -41,7 +41,7 @@ const TvProgramEdit = (props) => {
       await docRef.update({
         title, image, year, channel
       });
-      {props.valueUp()}
+      props.valueUp();
     } else {
       await docRef.get().then(function(doc) {
         if (doc.exists) {
@@ -53,7 +53,7 @@ const TvProgramEdit = (props) => {
             sliderIndex : 0
           });
           document.getElementById("tvEdit").style.display = "none";
-          {props.valueUp()}
+          props.valueUp();
         }
       }).catch(function(error) {
         alert("Error getting document:", error);

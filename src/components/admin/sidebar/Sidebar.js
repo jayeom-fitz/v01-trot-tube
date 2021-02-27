@@ -30,6 +30,11 @@ const Container = styled.div`
   z-index: 1;
   background-color: #413630;
   text-align: center;
+  
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `
 const Logo = styled.img`
   height: 40px;

@@ -59,8 +59,8 @@ function TvProgramSlider(props) {
 
           <StyledSlider {...settings}>
             {tvs.map(tv => 
-              <Link to={`/tv/${tv.id}`}>
-                <ImageContainer key={tv.id}>
+              <Link to={`/tv/${tv.id}`} key={tv.id}>
+                <ImageContainer>
                   <Image src={tv.image} alt={tv.title} />
                 </ImageContainer>
               </Link>

@@ -1,15 +1,5 @@
 export const SidebarData = [
   {
-    title: '유저',
-    path: '#',
-    subNav: [
-      {
-        title: '유저 관리',
-        path: '/admin/user'
-      }
-    ]
-  },
-  {
     title: 'TV 프로그램',
     path: '#',
     subNav: [
@@ -25,12 +15,47 @@ export const SidebarData = [
   },
   {
     title: '인물 관리',
+    path: '/admin/people',
+    subNav: []
+  },
+  {
+    title: 'TEST',
     path: '#',
     subNav: [
       {
-        title: '인물 정보',
-        path: '/admin/person'
-      }
+        title: 'TEST 1',
+        path: '#'
+      },
+      {
+        title: 'TEST 2',
+        path: '#'
+      },
+      {
+        title: 'TEST 3',
+        path: '#'
+      },
     ]
-  }
+  },
+  {
+    title: 'TEST',
+    path: '#',
+    subNav: [
+      {
+        title: 'TEST 1',
+        path: '#'
+      },
+      {
+        title: 'TEST 2',
+        path: '#'
+      },
+      {
+        title: 'TEST 3',
+        path: '#'
+      },
+      {
+        title: 'TEST 4',
+        path: '#'
+      },
+    ]
+  },
 ]

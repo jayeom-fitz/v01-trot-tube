@@ -8,6 +8,7 @@ import Main from '../components/admin/Main'
 
 import TvProgram from '../components/admin/tv-program/TvProgram';
 import TvProgramSlider from '../components/admin/tv-program/TvProgramSlider';
+import People from '../components/admin/people/People';
 
 function Admin(props) {
   const { startComponent } = useParams();
@@ -20,6 +21,7 @@ function Admin(props) {
     switch(prop) {
       case 'tv-program' : return <TvProgram />
       case 'tv-program-slider' : return <TvProgramSlider />
+      case 'people' : return <People />
       default : return <Main user={props.user} />
     }
   }

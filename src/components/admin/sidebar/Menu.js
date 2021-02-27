@@ -1,12 +1,9 @@
 import React from 'react'
 
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 
 import { SidebarData } from './SidebarData'
 import SubMenu from './SubMenu'
-
-import { AiOutlinePlusCircle, AiOutlineMinusCircle } from 'react-icons/ai'
 
 function Menu() {
   return (

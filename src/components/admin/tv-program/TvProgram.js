@@ -51,6 +51,7 @@ function TvProgram() {
       {loaded ? 
         <div style={{width:'100%'}}>
           <TvProgramEdit edit={edit} pid={pid} valueUp={valueUp}/>
+          <TvProgramContent pid={pid}/>
 
           <Container>
             <Title>TV 프로그램 관리</Title>
