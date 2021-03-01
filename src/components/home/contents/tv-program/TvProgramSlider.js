@@ -30,7 +30,7 @@ function TvProgramSlider(props) {
     async function getTvPrograms() {
       let arr = [];
       await storeService.collection('tv-programs')
-                      .where('sliderIndex', '!=', '0')
+                      .where('sliderIndex', '!=', 0)
                       .get().then(function (snapshot) {
         snapshot.forEach(doc => arr.push({...doc.data(), id: doc.id}));
       });

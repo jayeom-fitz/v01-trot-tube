@@ -52,13 +52,15 @@ function PeopleEdit(props) {
             name, image, birth, company,
             likes : 0
           });
-          document.getElementById("personEdit").style.right = "-800px";
           props.valueUp();
         }
       }).catch(function(error) {
         alert("Error getting document:", error);
       });
-    }    
+    }
+
+    setPid(''); setName(''); setImage(''); setBirth(''); setCompany('');
+    document.getElementById("personEdit").style.right = "-800px";
   }
 
   return (

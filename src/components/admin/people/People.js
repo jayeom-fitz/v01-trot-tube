@@ -18,24 +18,27 @@ function People() {
     return setValue(value + 1);
   }
 
-  useEffect(() => {
-    async function getPeople() {
-      await storeService.collection('people').get().then(function (snapshot) {
-        let arr = [];
-        snapshot.forEach(doc => arr.push({...doc.data(), id: doc.id}));
-        setPeople(arr); 
-        setLoaded(true);
-      })
-    }
+  async function getPeople() {
+    let arr = [];
+    await storeService.collection('people').get().then(function (snapshot) {  
+      snapshot.forEach(doc => 
+        arr.push({
+          id: doc.id, 
+          image: doc.data().image,
+          name: doc.data().name
+        })       
+      );
+    })
+    setLoaded(true); setPeople(arr);
+  }
 
-    getPeople();
-  }, [value])
+  useEffect(() => getPeople(), [value])
   
   const onEditButtonClick = (id) => {
     setEdit(false); setPid('');
     if(id !== '') {
       setEdit(true); setPid(id);
-    } 
+    }
 
     if(document.getElementById("personEdit"))
       document.getElementById("personEdit").style.right = "0";
@@ -45,7 +48,7 @@ function People() {
     <>
       {loaded ? 
         <div style={{width:'100%'}}>
-          <PeopleEdit pid={pid} edit={edit} valueUp={valueUp}/>
+          <PeopleEdit pid={pid} edit={edit} valueUp={valueUp}/>  
 
           <Container>
             <Title>인물 관리</Title>
@@ -54,7 +57,13 @@ function People() {
               <AddButton onClick={() => onEditButtonClick('')}>추가</AddButton>
               <PeopleCard>
                 {people.length === 0 ? <>등록된 인물이 없습니다</> :
-                  people.map((person) => <PersonCard key={person.id} personInfo={person} />)
+
+                  people.map((person) => 
+                  <PersonCard 
+                    key={person.id} 
+                    personInfo={person}
+                    onEditButtonClick={onEditButtonClick}
+                  />)
                 }
               </PeopleCard>
             </div>

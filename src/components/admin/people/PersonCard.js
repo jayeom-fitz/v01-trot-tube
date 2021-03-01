@@ -6,7 +6,7 @@ import Avatar from '@material-ui/core/Avatar'
 
 function PersonCard(props) {
   return (
-    <Container>
+    <Container onClick={() => props.onEditButtonClick(props.personInfo.id)}>
       <StyledAvatar src={props.personInfo.image} />
       <Name>{props.personInfo.name}</Name>
     </Container>
@@ -18,6 +18,7 @@ export default PersonCard
 const Container = styled.div`
   width: 150px;
   padding-top: 10px;
+
   &:hover {
     background-color: lightgrey;
   }
