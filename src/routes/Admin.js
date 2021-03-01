@@ -26,7 +26,7 @@ function Admin(props) {
       case 'tv-program-slider' : return <TvProgramSlider />
 
       case 'person' : return <Person />
-      case 'people' : return <People />
+      case 'people' : return <People /> 
       default : return <Main user={props.user} />
     }
   }

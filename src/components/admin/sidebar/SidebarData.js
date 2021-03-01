@@ -5,7 +5,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'TV 프로그램 관리',
-        path: '/admin/tv-program'
+        path: '/admin/tv-programs'
       },
       {
         title: '홈 슬라이드',

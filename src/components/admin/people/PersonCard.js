@@ -6,7 +6,7 @@ import Avatar from '@material-ui/core/Avatar'
 
 function PersonCard(props) {
   return (
-    <Container onClick={() => props.onEditButtonClick(props.personInfo.id)}>
+    <Container>
       <StyledAvatar src={props.personInfo.image} />
       <Name>{props.personInfo.name}</Name>
     </Container>

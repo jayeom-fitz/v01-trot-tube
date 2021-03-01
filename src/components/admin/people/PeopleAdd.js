@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -7,30 +7,12 @@ import { storeService } from "src/fbase"
 import { ImCross } from 'react-icons/im'
 import Avatar from '@material-ui/core/Avatar'
 
-function PeopleEdit(props) {
+function PeopleAdd(props) {
   const [pid, setPid] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [birth, setBirth] = useState('');
   const [company, setCompany] = useState('');
-
-  useEffect(() => {
-    setPid(''); setName(''); setImage(''); setBirth(''); setCompany('');
-
-    async function getPerson() {
-      await storeService.collection('people').doc(props.pid).get().then(function (doc) {
-        setName(doc.data().name);
-        setImage(doc.data().image);
-        setBirth(doc.data().birth);
-        setCompany(doc.data().company);
-      })
-    }
-
-    if(props.edit) {
-      setPid(props.pid);
-      getPerson();
-    }
-  }, [props.edit, props.pid])
   
   const onSubmit = async () => {
     if(!(props.edit || pid) || !image || !name || !birth || !company) {
@@ -38,26 +20,20 @@ function PeopleEdit(props) {
     }
     
     const docRef = storeService.collection('people').doc(pid);
-    if(props.edit) {
-      await docRef.update({
-        name, image, birth, company
-      });
-      props.valueUp();
-    } else {
-      await docRef.get().then(function(doc) {
-        if (doc.exists) {
-          alert("중복된 아이디입니다.");
-        } else {
-          docRef.set({
-            name, image, birth, company,
-            likes : 0
-          });
-          props.valueUp();
-        }
-      }).catch(function(error) {
-        alert("Error getting document:", error);
-      });
-    }
+
+    await docRef.get().then(function(doc) {
+      if (doc.exists) {
+        alert("중복된 아이디입니다.");
+      } else {
+        docRef.set({
+          name, image, birth, company,
+          likes : 0
+        });
+        props.valueUp();
+      }
+    }).catch(function(error) {
+      alert("Error getting document:", error);
+    });
 
     setPid(''); setName(''); setImage(''); setBirth(''); setCompany('');
     document.getElementById("personEdit").style.right = "-800px";
@@ -74,9 +50,9 @@ function PeopleEdit(props) {
         
 
         <div style={{display: 'flex'}}>
-          <Title style={{flex: '0.7'}}>인물 {props.edit ? '수정' : '생성' }</Title>
+          <Title style={{flex: '0.7'}}>인물 생성</Title>
           <InputBox style={{flex: '0.3'}}>
-            <Button onClick={onSubmit}>{props.edit ? '수정' : '생성' }</Button>
+            <Button onClick={onSubmit}>생성</Button>
           </InputBox>
         </div>
 
@@ -88,7 +64,7 @@ function PeopleEdit(props) {
           <Box flex='0.7'>
             <InputBox>
               <Text>아이디</Text>
-              <Input value={props.edit ? props.pid : pid} onChange={(v) => setPid(v.target.value)} readOnly={props.edit}/>
+              <Input value={pid} onChange={(v) => setPid(v.target.value)}/>
             </InputBox>
 
             <InputBox>
@@ -110,7 +86,6 @@ function PeopleEdit(props) {
               <Text>소속사</Text>
               <Input value={company} onChange={(v) => setCompany(v.target.value)}/>
             </InputBox>
-
           </Box>
         </BoxContainer>
       </Container>
@@ -118,7 +93,7 @@ function PeopleEdit(props) {
   )
 }
 
-export default PeopleEdit
+export default PeopleAdd
 
 const Body = styled.div`
   height: 100%;
@@ -130,6 +105,10 @@ const Body = styled.div`
   background-color: #ccc;
   overflow-x: hidden;
   transition: 0.5s;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `
 const Container = styled.div`
   width: 100%;
