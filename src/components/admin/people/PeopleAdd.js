@@ -48,7 +48,6 @@ function PeopleAdd(props) {
           }}/>
         </CloseBar>
         
-
         <div style={{display: 'flex'}}>
           <Title style={{flex: '0.7'}}>인물 생성</Title>
           <InputBox style={{flex: '0.3'}}>

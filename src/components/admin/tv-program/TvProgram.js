@@ -25,7 +25,7 @@ function TvProgram() {
     }
 
     getTvProgram();
-  }, [id, value])
+  }, [value])
 
   const onInfoSave = async () => {
     if(!tvProgram.image || !tvProgram.title || !tvProgram.year || !tvProgram.channel) {

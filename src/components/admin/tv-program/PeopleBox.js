@@ -5,35 +5,74 @@ import styled from 'styled-components'
 
 import { storeService } from "src/fbase"
 
+import { AiOutlineArrowUp, AiOutlineArrowDown } from 'react-icons/ai'
 import { BsPlusCircle } from 'react-icons/bs'
+import Avatar from '@material-ui/core/Avatar'
+
+import AddPeople from './AddPeople'
 
 function PeopleBox() {
   const { id } = useParams();
 
+  const [loaded, setLoaded] = useState(false);
   const [directories, setDirectories] = useState([]);
   const [deleted, setDeleted] = useState([]);
   const [people, setPeople] = useState([]);
 
+  const [did, setDid] = useState('');
+  const [dtitle, setDtitle] = useState('');
+
   useEffect(() => {
-    
+    async function getDirectories() {
+      var dir = []; var pp = [];
+      const dirRef = storeService.collection('tv-programs').doc(id);
+
+      await dirRef.collection('directories').get().then(function (snapshot) {
+        snapshot.forEach(doc => dir.push({
+          ...doc.data(), id: doc.id, onDB: true, updated: false
+        }));
+      });
+
+      await dirRef.collection('people').get().then(function (snapshot) {
+        snapshot.forEach(async function (doc) {
+          await storeService.collection('people').doc(doc.id).get().then(function (person) {
+            pp.push({
+              id: doc.id,
+              dir: doc.data().dir, 
+              name: person.data().name,
+              image: person.data().image,
+              onDB: true, updated: false
+            })      
+          }) 
+        });
+      });
+
+      setDirectories(dir.sort(function (a,b) {
+        return a.index - b.index;
+      })); setPeople(pp); setLoaded(true);
+    }
+
+    getDirectories();
   }, [])
 
   const onAddDirectoryClick = () => {
     setDirectories([...directories, {
-      id: `new${directories.length}`,
+      id: `directory${directories.length}`,
       index: directories.length,
       title: '새 디렉토리',
       textColor: 'ffffff',
       bgColor: '000000',
       onDB: false,
+      updated: true,
     }]);
   }
 
   const onApplyClick = (id) => {
     let arr = directories.slice();
-    for(var i=0; i<arr.length; i++) {
+    var i;
+    for(i=0; i<arr.length; i++) {
       if(id === arr[i].id){
-        if(document.getElementById(id).value !== '') {
+        if(!arr[i].onDB && document.getElementById(id).value !== '') {
           for(var j=0; j<arr.length; j++) {
             if(i !== j && document.getElementById(id).value === arr[j].id) {
               alert('중복된 id 입니다.')
@@ -53,6 +92,7 @@ function PeopleBox() {
         break;
       }
     }
+    arr[i].updated = true;
     setDirectories(arr);
   }
 
@@ -78,77 +118,167 @@ function PeopleBox() {
     }
   }
 
-  const onChange = (e) => {
-    console.log(e.target);
+  const onMoveClick = ({idx, dir}) => {
+    if(idx + dir < 0 || idx + dir >= directories.length) 
+      return;
+
+    var arr = directories.slice();
+
+    var a = arr[idx]; 
+    a.index = idx + dir; 
+    a.updated = true;
+
+    arr[idx] = arr[idx + dir]; 
+    arr[idx].index = idx; 
+    arr[idx].updated = true;
+
+    arr[idx + dir] = a;
+    setDirectories(arr);
   }
 
-  const onSave = () => {
+  const onAddPeopleButtonClick = (idx) => {
+    setDid(directories[idx].id);    setDtitle(directories[idx].title);
+    document.getElementById("AddPeople").style.right = "0";
+  }
+  
+  const onAddPeople = (array) => {
+    var arr = people.slice();
+    array.map(data => arr.push({
+      id: data.id, 
+      image: data.image, 
+      name: data.name,
+      dir: did,
+      onDB: false,
+      updated: true
+    }));
+    setPeople(arr);
+  }
 
+  const onSave = async () => {
+    var i;
+    if(deleted.length !== 0) {
+
+    }
+
+    const dirRef = storeService.collection('tv-programs').doc(id);
+    for(i=0; i<directories.length; i++) {
+      if(!directories[i].onDB || directories[i].updated) {
+        await dirRef.collection('directories').doc(directories[i].id).set({
+          index: directories[i].index,
+          title: directories[i].title,
+          textColor: directories[i].textColor,
+          bgColor: directories[i].bgColor,
+        })
+      } 
+    }
+
+    const ppRef = storeService.collection('people');
+    var arr = people.slice();
+    for(i=0; i<arr.length; i++) {
+      if(!arr[i].onDB) {
+        await ppRef.doc(arr[i].id).collection('tv-programs').doc(id).set({
+          addedDate: Date.now()
+        })
+        arr[i].onDB = true;
+      }
+      if(arr[i].updated) {
+        await dirRef.collection('people').doc(arr[i].id).set({
+          dir: arr[i].dir
+        })
+        arr[i].updated = false;
+      }
+    }
+    setPeople(arr);
+    alert('저장되었습니다.');
   }
 
   return (
     <Container>
-      {directories.length === 0 ? null : 
-        directories.map((data) => 
-          <Directory key={data.id}>
-            <Setting>
-              <DirectorySetting>
-                <div>
-                  <Input id={data.id} width='100px' placeholder='id...'/>
-                  {data.id} 
-                </div>
-                <div>
-                  <Input id={`${data.id}-title`} width='150px' placeholder='title...' />
-                  {data.title} 
-                </div>
-                <div>
-                  <Input id={`${data.id}-bgcolor`} width='100px' placeholder='bg-color...' />
-                  {data.bgColor}
-                </div>
-                <div>
-                  <Input id={`${data.id}-tcolor`} width='100px' placeholder='text-color...' />
-                  {data.textColor}
-                </div>                
-              </DirectorySetting>
+      {!loaded ? null : <>
+        <AddPeople 
+          id={did}
+          title={dtitle}
+          addedPeople={people}
+          onAddPeople={onAddPeople}
+        />
 
-              <ButtonBox>
-                <Button 
-                  color='#0275d8' hoverColor='' hoverBColor='#003399'
-                  onClick={() => onApplyClick(data.id)}>적용</Button>
-                <Button 
-                  color='#d9534f' hoverColor='white' hoverBColor='#ae423f'
-                  onClick={() => onDeleteClick(data.index)}>삭제</Button>
-              </ButtonBox> 
-            </Setting>
+        {directories.length === 0 ? null : 
+          directories.map((data) => 
+            <Directory key={data.id}>
+              <Setting>
+                <DirectorySetting>
+                  <div>
+                    {data.onDB ? null :
+                      <Input id={data.id} width='100px' placeholder='id...'/>
+                    }
+                    {data.id} 
+                  </div>
+                  <div>
+                    <Input id={`${data.id}-title`} width='150px' placeholder='title...' />
+                    {data.title} 
+                  </div>
+                  <div>
+                    <Input id={`${data.id}-bgcolor`} width='100px' placeholder='bg-color...' />
+                    {data.bgColor}
+                  </div>
+                  <div>
+                    <Input id={`${data.id}-tcolor`} width='100px' placeholder='text-color...' />
+                    {data.textColor}
+                  </div>                
+                </DirectorySetting>
 
-            <DirectoryContent>
-              <TopLine>
-                <DirectoryContentTitle tcolor={data.textColor} bcolor={data.bgColor}>
-                  {data.title}
-                </DirectoryContentTitle>
-              </TopLine>
+                <ButtonBox>
+                  <Button 
+                    color='#0275d8' hoverColor='' hoverBColor='#003399'
+                    onClick={() => onApplyClick(data.id)}>적용</Button>
+                  <Button 
+                    color='#d9534f' hoverColor='' hoverBColor='#ae423f'
+                    onClick={() => onDeleteClick(data.index)}>삭제</Button>
+                  <Button 
+                    color='#FFC0CB' hoverColor='' hoverBColor='#FF69B4'
+                    onClick={() => onMoveClick({idx: data.index, dir: -1})}
+                    ><AiOutlineArrowUp /></Button>
+                  <Button 
+                    color='#87CEEB' hoverColor='' hoverBColor='#00CCCC'
+                    onClick={() => onMoveClick({idx: data.index, dir: 1})}
+                    ><AiOutlineArrowDown /></Button>
+                </ButtonBox> 
+              </Setting>
 
-              <People>
-                {people.filter(person => person.dir === data.id).length === 0 ? null : 
-                  <>aaaa</>
-                }
-                <AddPeople>
-                  <BsPlusCircle style={{margin:'auto'}} size="24" color="grey"/>
-                </AddPeople>
-              </People>
-            </DirectoryContent>
-            
-          </Directory>
-        )
-      }
+              <DirectoryContent>
+                <TopLine>
+                  <DirectoryContentTitle tcolor={data.textColor} bcolor={data.bgColor}>
+                    {data.title}
+                  </DirectoryContentTitle>
+                </TopLine>
+                
+                <People bcolor={data.bgColor}>
+                  {
+                    people.filter(person => person.dir === data.id).map(p => 
+                      <PersonCard key={`person-${p.id}`}>
+                        <StyledAvatar src={p.image} />
+                        <Name>{p.name}</Name>
+                      </PersonCard>
+                    )
+                  }
+                  <AddPeopleButton onClick={() => onAddPeopleButtonClick(data.index)}>
+                    <BsPlusCircle style={{margin:'auto'}} size="24" color="grey"/>
+                  </AddPeopleButton>
+                </People>
+              </DirectoryContent>
+              
+            </Directory>
+          )
+        }
 
-      <AddBox onClick={onAddDirectoryClick}>
-        <BsPlusCircle style={{margin:'auto'}} size="24" color="grey"/>
-      </AddBox>       
+        <AddBox onClick={onAddDirectoryClick}>
+          <BsPlusCircle style={{margin:'auto'}} size="24" color="grey"/>
+        </AddBox>       
 
-      <InputBox>
-        <Button onClick={onSave}>저장</Button>
-      </InputBox> 
+        <InputBox>
+          <Button onClick={onSave}>저장</Button>
+        </InputBox>    
+      </>}
     </Container>
   )
 }
@@ -183,9 +313,11 @@ const DirectoryContent = styled.div`
 `
 const People = styled.div`
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
   border: 1px solid #${(props) => props.bcolor || '000000'};
 `
-const AddPeople = styled.div`
+const AddPeopleButton = styled.div`
   display: flex;
   width: 150px;
   height: 200px;
@@ -247,4 +379,21 @@ const Button = styled.button`
     color: ${(props) => props.hoverColor || 'white'};
     background-color: ${(props) => props.hoverBColor || '#007E33'};
   }
+`
+const PersonCard = styled.div`
+  width: 150px;
+  padding-top: 10px;
+
+  &:hover {
+    background-color: lightgrey;
+  }
+`
+const StyledAvatar = styled(Avatar)`
+  width: 120px !important;
+  height: 120px !important;
+  margin: auto;
+  border: 1px solid lightgrey;
+`
+const Name = styled.h4`
+  text-align: center;
 `
