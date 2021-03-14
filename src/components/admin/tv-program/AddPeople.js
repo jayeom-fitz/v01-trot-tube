@@ -1,61 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import styled, { css } from 'styled-components'
-
-import { storeService } from "src/fbase"
 
 import { ImCross } from 'react-icons/im'
 import Avatar from '@material-ui/core/Avatar'
 
 function AddPeople(props) {
-  const [people, setPeople] = useState([]);
-
-  useEffect(() => {
-    async function getPeople() {
-      await storeService.collection('people').get().then(function (snapshot) {  
-        let arr = [];
-        snapshot.forEach(doc => {
-          if(props.addedPeople.filter(person => person.id === doc.id).length === 0) {
-            arr.push({
-              id: doc.id, 
-              image: doc.data().image,
-              name: doc.data().name,
-              active: true,
-              selected: false,
-            })       
-          }
-        });
-        setPeople(arr);
-      });
-    }
-
-    getPeople();   
-  }, [])
-
   const onChange = (e) => {
     const name = e.target.value;
-    if(people.length === 0) return;
-    var arr = people.slice();
+    if(props.people.length === 0) return;
+    var arr = props.people.slice();
     for(var i=0; i<arr.length; i++) {
       arr[i].active = arr[i].name.includes(name);      
     }
-    setPeople(arr);
+    props.setPeople(arr);
   }
 
   const onPersonClick = (id) => {
-    var arr = people.slice();
+    var arr = props.people.slice();
     for(var i=0; i<arr.length; i++) {
       if(arr[i].id === id) {
         arr[i].selected = !arr[i].selected;    
         break;
       }
     }
-    setPeople(arr);
+    props.setPeople(arr);
   }
 
   const onAddButtonClick = () => {
-    props.onAddPeople(people.filter(person => person.selected));
-    setPeople(people.filter(person => !person.selected));
+    props.onAddPeople(props.people.filter(person => person.selected));
+    props.setPeople(props.people.filter(person => !person.selected));
     document.getElementById("AddPeople").style.right = "-100%";
   }
 
@@ -77,10 +51,10 @@ function AddPeople(props) {
               </div>
             </div>
           </Header>
-
+          
           <PeopleCard>
-            {people.length === 0 ? <>등록된 인물이 없습니다</> :
-              people.filter(person => person.active).map((person) =>   
+            {props.people.length === 0 ? <>등록된 인물이 없습니다</> :
+              props.people.filter(person => person.active).map((person) =>   
                 <PersonCard 
                   key={`addPerson-${person.id}`} 
                   onClick={() => onPersonClick(person.id)}

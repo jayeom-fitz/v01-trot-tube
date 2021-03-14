@@ -10,22 +10,70 @@ import PeopleBox from './PeopleBox';
 function TvProgram() {
   const { id } = useParams();
 
-  const [loaded, setLoaded] = useState(true);
+  const [loaded, setLoaded] = useState(false);
   const [tvProgram, setTvProgram] = useState(null);
   const [title, setTitle] = useState('');
-  const [value, setValue] = useState(0);
+  const [directories, setDirectories] = useState([]);
+  const [addedPeople, setAddedPeople] = useState([]);
+  const [people, setPeople] = useState([]);
 
-  useEffect(() => {
-    async function getTvProgram() {
-      await storeService.collection('tv-programs').doc(id).get().then(function (doc) {
-        setTvProgram(doc.data());
-        setTitle(doc.data().title);
-        setLoaded(true);
-      })
-    }
+  async function getTvProgram() {
+    await storeService.collection('tv-programs').doc(id).get().then(function (doc) {
+      setTvProgram(doc.data());
+      setTitle(doc.data().title);
+    })
+  }
 
-    getTvProgram();
-  }, [value])
+  async function getDirectories() {
+    var dir = []; var pp = []; var arr = [];
+    const dirRef = storeService.collection('tv-programs').doc(id);
+
+    await dirRef.collection('directories').get().then(function (snapshot) {
+      snapshot.forEach(doc => dir.push({
+        ...doc.data(), id: doc.id, onDB: true, updated: false
+      }));
+    });
+
+    await dirRef.collection('people').get().then(function (snapshot) {
+      snapshot.forEach(async function (doc) {
+        await storeService.collection('people').doc(doc.id).get().then(function (person) {
+          pp.push({
+            id: doc.id,
+            dir: doc.data().dir, 
+            name: person.data().name,
+            image: person.data().image,
+            onDB: true, updated: false
+          })      
+        }) 
+      });
+    });
+
+    await storeService.collection('people').get().then(function (snapshot) {  
+      snapshot.forEach(doc => {
+        if(pp.filter(person => person.id === doc.id).length === 0) {
+          arr.push({
+            id: doc.id, 
+            image: doc.data().image,
+            name: doc.data().name,
+            active: true,
+            selected: false,
+          })       
+        }
+      }); 
+    });
+
+    setDirectories(dir.sort(function (a,b) {
+      return a.index - b.index;
+    })); setAddedPeople(pp); setPeople(arr);
+  }
+
+  function init() {
+    getTvProgram(); 
+    getDirectories();
+    setTimeout(() => setLoaded(true), 1000);  
+  }
+
+  useEffect(() => init(), [])
 
   const onInfoSave = async () => {
     if(!tvProgram.image || !tvProgram.title || !tvProgram.year || !tvProgram.channel) {
@@ -37,7 +85,7 @@ function TvProgram() {
     await docRef.get().then(function(doc) {
       docRef.update(tvProgram);
       alert('저장되었습니다.');
-      setValue(value + 1);
+      setTitle(tvProgram.title);
     }).catch(function(error) {
       alert("Error getting document:", error);
     });
@@ -45,7 +93,7 @@ function TvProgram() {
 
   return (
     <>
-      {loaded && tvProgram ? 
+      {loaded && tvProgram &&
         <div style={{width:'100%'}}>
           <Container>
             <Title>TV 프로그램 관리 - {title} [{id}]</Title>
@@ -90,10 +138,14 @@ function TvProgram() {
               <Button onClick={onInfoSave}>저장</Button>
             </InputBox>
 
-            <PeopleBox />            
+            <PeopleBox 
+              directories={directories} setDirectories={setDirectories}
+              addedPeople={addedPeople} setAddedPeople={setAddedPeople}
+              people={people} setPeople={setPeople}
+            />            
           </Container>
         </div>
-      : null}
+      }
     </>
   )
 }
