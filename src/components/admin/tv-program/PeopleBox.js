@@ -119,6 +119,21 @@ function PeopleBox(props) {
     props.setAddedPeople(arr);
   }
 
+  const onPersonMove = ({idx, dir, pid}) => {
+    if(idx + dir < 0 || idx + dir >= props.directories.length) 
+      return;
+
+    var arr = props.addedPeople.slice();
+    for(var i=0; i<arr.length; i++) {
+      if(arr[i].id === pid) {
+        arr[i].dir = props.directories[idx + dir].id;
+        arr[i].updated = true;
+        break;
+      }
+    }
+    props.setAddedPeople(arr);
+  }
+
   const onSave = async () => {
     var i;
     var arr = props.addedPeople.slice();
@@ -275,6 +290,24 @@ function PeopleBox(props) {
                       <PersonCard key={`person-${p.id}`}>
                         <StyledAvatar src={p.image} />
                         <Name>{p.name}</Name>
+                        <div style={{textAlign:'center'}}>
+                          <ArrowButton 
+                            onClick={() => onPersonMove({
+                              idx: data.index, 
+                              dir: -1,
+                              pid: p.id
+                            })}>
+                            <AiOutlineArrowUp />
+                          </ArrowButton>
+                          <ArrowButton 
+                            onClick={() => onPersonMove({
+                              idx: data.index, 
+                              dir: 1,
+                              pid: p.id
+                            })}>
+                            <AiOutlineArrowDown />
+                          </ArrowButton>
+                        </div>
                       </PersonCard>
                     ))}
                   <AddPeopleButton
@@ -360,7 +393,7 @@ const Input = styled.input`
   padding: 5px;
 `
 const DirectoryContentTitle = styled.div`
-  width: 150px;
+  width: 200px;
   height: 20px;
   padding: 5px;
   text-align: center;
@@ -415,4 +448,22 @@ const StyledAvatar = styled(Avatar)`
 `
 const Name = styled.h4`
   text-align: center;
+  padding: 10px;
+  margin: 0;
+`
+const ArrowButton = styled.div`
+  width: 20px;
+  display: inline-block;
+  text-align: center;
+  border: 2px solid grey;
+  border-radius: 50%;
+  cursor: pointer;
+
+  svg {
+    pointer-events: none;
+  }
+
+  &:hover {
+    background-color: aquamarine;
+  }
 `
