@@ -7,6 +7,9 @@ import { storeService } from 'src/fbase'
 
 import Avatar from '@material-ui/core/Avatar'
 
+import Videos from './Videos';
+import AddVideo from './AddVideo';
+
 function TvProgram(props) {
   const { tpid } = useParams();
 
@@ -14,6 +17,11 @@ function TvProgram(props) {
   const [tvProgram, setTvProgram] = useState(null);
   const [directories, setDirectories] = useState([]);
   const [people, setPeople] = useState([]);
+  const [value, setValue] = useState(0);
+
+  const [dir, setDir] = useState(null);
+  const [person, setPerson] = useState(null);
+  const [videos, setVideos] = useState([]);
 
   async function getTvProgram() {
     await storeService.collection('tv-programs').doc(tpid).get().then(function (doc) {
@@ -32,13 +40,15 @@ function TvProgram(props) {
     });
 
     await dirRef.collection('people').get().then(function (snapshot) {
+      var index = 0;
       snapshot.forEach(async function (doc) {
         await storeService.collection('people').doc(doc.id).get().then(function (person) {
           pp.push({
             id: doc.id,
             dir: doc.data().dir, 
             name: person.data().name,
-            image: person.data().image
+            image: person.data().image,
+            index: index++
           })      
         }) 
       });
@@ -52,14 +62,34 @@ function TvProgram(props) {
   function init() {
     getTvProgram(); 
     getDirectories();
-    setTimeout(() => setLoaded(true), 2000);  
+    setTimeout(() => setLoaded(true), 1500);  
   }
 
-  useEffect(() => init(), [])
+  useEffect(() => {
+    if(value === 0) init();
+  }, [value])
+
+  async function getVideosOfPerson(index) {
+    if(person === null || (index !== person.index)) {
+      setPerson(people[index]);
+      setValue(value + 1);
+    }
+    document.getElementById("videos").style.right = "0";
+  } 
 
   return (
     <Container>
       {loaded && tvProgram && <>
+        {props.user && props.user.verified === 2 && person && <>
+          <AddVideo person={person} />
+        </>}
+        
+        <Videos 
+          person={person}
+          videos={videos}
+          verified={props.user ? props.user.verified : 0}
+        />
+
         <Title>
           <Image src={tvProgram.image} />
         </Title>
@@ -78,7 +108,10 @@ function TvProgram(props) {
               <People bcolor={directory.bgColor}>
               {people.filter((person) => person.dir === directory.id)
                 .map((p) => (
-                  <PersonCard key={`person-${p.id}`}>
+                  <PersonCard 
+                    key={`person-${p.id}`}
+                    onClick={() => getVideosOfPerson(p.index)}
+                  >
                     <StyledAvatar src={p.image} />
                     <Name>{p.name}</Name>
                   </PersonCard>
@@ -136,6 +169,7 @@ const People = styled.div`
 const PersonCard = styled.div`
   width: 150px;
   padding-top: 10px;
+  cursor: pointer;
 
   &:hover {
     background-color: lightgrey;
