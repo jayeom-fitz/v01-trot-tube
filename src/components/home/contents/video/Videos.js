@@ -37,6 +37,22 @@ function Videos(props) {
             </PersonRow>
           }
         </Header>
+        
+        <Content>
+          {props.videos.map((video) => (
+            <Link key={video.id} to={`/video/${video.id}`} style={{textDecoration:'none'}}>
+              <VideoBox>
+                <Image src={`http://img.youtube.com/vi/${video.id}/0.jpg`} />
+                <h4 style={{color:'black'}}>{video.song}</h4>
+              </VideoBox>
+            </Link>
+          ))}
+          {props.isMore && <>
+            <MoreButton onClick={() => props.getMoreVideos()}>
+              더보기
+            </MoreButton>
+          </>}
+        </Content>
       </Body>
     </Container>
   )
@@ -111,4 +127,28 @@ const Button = styled.button`
     color: white;
     background-color: #007E33;
   }
+`
+const Content = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 210px;
+`
+const VideoBox = styled.div`
+  width: 250px;
+  padding: 10px;
+  text-align: center;
+
+  &:hover {
+    background-color: lightgrey;
+  }
+`
+const Image = styled.img`
+  width: 240px;
+  height: 180px;
+`
+const MoreButton = styled.button`
+  width: 250px;
+  height: 200px;
+  margin: 10px;
 `

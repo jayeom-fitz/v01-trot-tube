@@ -48,7 +48,6 @@ function AddVideo(props) {
       alert("Error getting document:", error);
     });
 
-    alert('영상이 추가되었습니다.');
     document.getElementById("addVideo").style.right = "-50%";
   }
 
@@ -72,9 +71,11 @@ function AddVideo(props) {
           </InputBox>
 
           <InputBox>
-            <Image 
-              src={`http://img.youtube.com/vi/${vid}/0.jpg`}
-            />
+            {vid &&
+              <Image 
+                src={`http://img.youtube.com/vi/${vid}/0.jpg`}
+              />
+            }
           </InputBox>
 
           <InputBox>

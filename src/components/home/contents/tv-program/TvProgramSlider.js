@@ -1,20 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import styled from "styled-components"
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-import { storeService } from "src/fbase";
+import styled from "styled-components"
 
 import Slider from 'react-slick'
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 
-import { Link } from 'react-router-dom'
-
 import { GoGear } from 'react-icons/go'
 
 function TvProgramSlider(props) {
-  const [loaded, setLoaded] = useState(false);
-  const [tvs, setTvs] = useState([]);
-
   const settings = {
     dots: true,
     infinite: true,
@@ -25,29 +20,10 @@ function TvProgramSlider(props) {
     autoplay: true,
     autoplaySpeed: 3000,
   };
-  
-  useEffect(() => {
-    async function getTvPrograms() {
-      let arr = [];
-      await storeService.collection('tv-programs')
-                      .where('sliderIndex', '!=', 0)
-                      .get().then(function (snapshot) {
-        snapshot.forEach(doc => arr.push({...doc.data(), id: doc.id}));
-      });
-
-      setTvs([...arr.sort(function (a, b) {
-        return a.sliderIndex - b.sliderIndex;
-      })]);
-      
-      setLoaded(true);
-    }
-
-    getTvPrograms();
-  }, [])
 
   return (
     <>
-      {loaded ?
+      {props.tvs &&
         <Container>
           {props.user && props.user.verified === 2 ? (
             <EditBar>
@@ -58,7 +34,7 @@ function TvProgramSlider(props) {
           ) : null}
 
           <StyledSlider {...settings}>
-            {tvs.map(tv => 
+            {props.tvs.map(tv => 
               <Link to={`/tv/${tv.id}`} key={tv.id}>
                 <ImageContainer>
                   <Image src={tv.image} alt={tv.title} />
@@ -67,7 +43,7 @@ function TvProgramSlider(props) {
             )}
           </StyledSlider>
         </Container>
-      : null}
+      }
     </>
   )
 }

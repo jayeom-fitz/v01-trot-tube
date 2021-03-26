@@ -7,8 +7,8 @@ import { storeService } from 'src/fbase'
 
 import Avatar from '@material-ui/core/Avatar'
 
-import Videos from './Videos';
-import AddVideo from './AddVideo';
+import Videos from '../video/Videos';
+import AddVideo from '../video/AddVideo';
 
 function TvProgram(props) {
   const { tpid } = useParams();
@@ -19,9 +19,9 @@ function TvProgram(props) {
   const [people, setPeople] = useState([]);
   const [value, setValue] = useState(0);
 
-  const [dir, setDir] = useState(null);
   const [person, setPerson] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [isMore, setIsMore] = useState(true);
 
   async function getTvProgram() {
     await storeService.collection('tv-programs').doc(tpid).get().then(function (doc) {
@@ -30,7 +30,7 @@ function TvProgram(props) {
   }
 
   async function getDirectories() {
-    var dir = []; var pp = []; var arr = [];
+    var dir = []; var pp = [];
     const dirRef = storeService.collection('tv-programs').doc(tpid);
 
     await dirRef.collection('directories').get().then(function (snapshot) {
@@ -71,10 +71,50 @@ function TvProgram(props) {
 
   async function getVideosOfPerson(index) {
     if(person === null || (index !== person.index)) {
-      setPerson(people[index]);
-      setValue(value + 1);
+      setPerson(people[index]); setIsMore(true);
+
+      await storeService.collection('people').doc(people[index].id)
+        .collection('videos').where('tpid', '==', tpid).orderBy('createdAt', 'desc').limit(10)
+        .get().then(function (snapshot) {
+          if(snapshot.empty || snapshot.size % 10 !== 0) 
+            setIsMore(false);
+
+          var arr = [];
+          snapshot.forEach(async function(doc) {
+            await storeService.collection('videos').doc(doc.id).get().then(function (video) {
+              arr.push({
+                ...video.data(),
+                id: doc.id
+              })      
+            }) 
+          })
+          setVideos(arr);
+        })
+      setTimeout(() => setValue(value + 1), 500);
     }
     document.getElementById("videos").style.right = "0";
+  }
+
+  async function getMoreVideos() {
+    await storeService.collection('people').doc(person.id)
+      .collection('videos').where('tpid', '==', tpid)
+      .orderBy('createdAt', 'desc').startAfter(videos[videos.length-1].createdAt).limit(10)
+      .get().then(function (snapshot) {
+        if(snapshot.empty || snapshot.size % 10 !== 0) 
+          setIsMore(false);
+
+        var arr = videos.slice();
+        snapshot.forEach(async function(doc) {
+          await storeService.collection('videos').doc(doc.id).get().then(function (video) {
+            arr.push({
+              ...video.data(),
+              id: doc.id
+            })      
+          }) 
+        })
+        setVideos(arr);
+      })
+    setTimeout(() => setValue(value + 1), 500);
   } 
 
   return (
@@ -88,6 +128,8 @@ function TvProgram(props) {
           person={person}
           videos={videos}
           verified={props.user ? props.user.verified : 0}
+          isMore={isMore}
+          getMoreVideos={getMoreVideos}
         />
 
         <Title>
