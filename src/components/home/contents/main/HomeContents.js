@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 import { storeService } from "src/fbase";
 
-import TvProgramSlider from './tv-program/TvProgramSlider';
-import RecentVideos from './video/RecentVideos';
+import TvProgramSlider from './TvProgramSlider';
+import RecentVideos from './RecentVideos';
 
 function HomeContents(props) {
   const [loaded, setLoaded] = useState(false);
@@ -30,7 +30,7 @@ function HomeContents(props) {
 
     const ref = storeService.collection('videos');
 
-    await ref.orderBy('createdAt', 'desc').limit(10).get()
+    await ref.orderBy('createdAt', 'desc').limit(20).get()
       .then(function (snapshot) {
         snapshot.forEach(async function(doc) {
           var singer = '';

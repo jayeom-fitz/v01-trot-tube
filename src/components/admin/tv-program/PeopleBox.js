@@ -135,10 +135,10 @@ function PeopleBox(props) {
   }
 
   const onSave = async () => {
-    var i;
     var arr = props.addedPeople.slice();
+
     if(deleted.length !== 0) {
-      for(i=0; i<deleted.length; i++){
+      for(var i=0; i<deleted.length; i++){
         if(deleted[i].onDB) {
           await storeService.collection('tv-programs').doc(id)
           .collection('directories').doc(deleted[i].id).delete();
@@ -159,7 +159,7 @@ function PeopleBox(props) {
     }
 
     const dirRef = storeService.collection('tv-programs').doc(id);
-    for(i=0; i<props.directories.length; i++) {
+    for(var i=0; i<props.directories.length; i++) {
       if(!props.directories[i].onDB || props.directories[i].updated) {
         await dirRef.collection('directories').doc(props.directories[i].id).set({
           index: props.directories[i].index,
@@ -171,7 +171,7 @@ function PeopleBox(props) {
     }
 
     const ppRef = storeService.collection('people');
-    for(i=0; i<arr.length; i++) {
+    for(var i=0; i<arr.length; i++) {
       if(!arr[i].onDB) {
         await ppRef.doc(arr[i].id).collection('tv-programs').doc(id).set({
           addedDate: Date.now()

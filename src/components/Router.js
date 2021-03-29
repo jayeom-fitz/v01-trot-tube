@@ -22,6 +22,10 @@ function AppRouter(props) {
           path="/tv/:tpid"
           render={() => <Home user={props.user} pageName='tv-program'/>}/>
 
+        <Route 
+          path="/video/:vid"
+          render={() => <Home user={props.user} pageName='video'/>}/>
+
         <Route exact path="/admin/" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent/:id" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent" ><Admin user={props.user} /></Route>

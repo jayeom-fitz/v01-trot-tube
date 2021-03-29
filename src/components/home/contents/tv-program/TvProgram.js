@@ -7,8 +7,8 @@ import { storeService } from 'src/fbase'
 
 import Avatar from '@material-ui/core/Avatar'
 
-import Videos from '../video/Videos';
-import AddVideo from '../video/AddVideo';
+import Videos from './Videos';
+import AddVideo from './AddVideo';
 
 function TvProgram(props) {
   const { tpid } = useParams();
@@ -62,11 +62,14 @@ function TvProgram(props) {
   function init() {
     getTvProgram(); 
     getDirectories();
+    setValue(value + 1);
     setTimeout(() => setLoaded(true), 1500);  
   }
 
   useEffect(() => {
-    if(value === 0) init();
+    if(value === 0) {
+      init();
+    }
   }, [value])
 
   async function getVideosOfPerson(index) {
