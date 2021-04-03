@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react' 
 import { useParams } from "react-router-dom";
+import uuid from 'react-uuid'
 
 import styled from "styled-components";
 
 import { storeService } from "src/fbase";
 
-import { MdThumbUp } from 'react-icons/md'
+import ViewsAndLikes from './ViewsAndLikes'
+import Comment from './Comment'
 
 function Video(props) {
   const { vid } = useParams();
@@ -13,7 +15,9 @@ function Video(props) {
   const [loaded, setLoaded] = useState(false);
   const [video, setVideo] = useState(null);
   const [singer, setSinger] = useState([]);
+  const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
+  const [myComment, setMyComment] = useState('');
 
   const [value, setValue] = useState(0);
 
@@ -24,9 +28,9 @@ function Video(props) {
       setVideo({...doc.data()});
     })
 
-    await ref.collection('singer').get().then(function (singers) {
+    await ref.collection('singer').get().then(function (snapshot) {
       var array = [];
-      singers.forEach(function (singer) {
+      snapshot.forEach(function (singer) {
         array.push({
           ...singer.data(),
           id: singer.id
@@ -35,20 +39,36 @@ function Video(props) {
       setSinger(array);
     })
 
-    if(props.user) {
-      await ref.collection('liked').doc(props.user.uid).get().then(function (doc) {
-        setIsLiked(doc.exists);
+    await ref.collection('comments').orderBy('createdAt', 'desc').limit(20)
+      .get().then(function(snapshot) {
+        var array = [];
+        snapshot.forEach(function (data) {
+          array.push({
+            ...data.data(),
+            id: data.id
+          })
+        })
+        setComments(array);
       })
-    }
 
     setLoaded(true);
     setTimeout(() => setValue(value + 1), 1500);
     setTimeout(() => upViews(), 60000);
   }
 
+  async function getLiked() {
+    const ref = storeService.collection('videos').doc(vid);
+    if(props.user !== null) {
+      await ref.collection('liked').doc(props.user.uid).get().then(function (doc) {
+        setIsLiked(doc.exists);
+      })
+    }
+  }
+
   useEffect(() => {
     if(value === 0) init();
-  }, [value])
+    getLiked();
+  }, [value, props.user])
   
   async function upViews() {  
     const ref = storeService.collection('videos').doc(vid);
@@ -65,66 +85,28 @@ function Video(props) {
     })
   }
 
-  function viewsToString(views) {
-    views = parseInt(views);
-    var v = views % 1000; views = parseInt(views/1000);
-    for(;views !== 0; views = parseInt(views/1000)) {
-      v = views % 1000 + ',' + v;
-    }
-    return '조회수 : ' + v + '회';
-  }
+  async function onWriteComment() {
+    const commentID = uuid()
+    const comment = {
+      uid: props.user.uid,
+      name: props.user.nickname,
+      image: props.user.photoURL,
+      content: myComment, 
+      createdAt: Date.now()
+    };
 
-  function dateToString(now) {
-    var date = new Date(now).toString().split(' ');
-    var month;
-    switch (date[1]) {
-      case 'Jan': month = 1; break;
-      case 'Feb': month = 2; break;
-      case 'Mar': month = 3; break;
-      case 'Apr': month = 4; break;
-      case 'May': month = 5; break;
-      case 'Jun': month = 6; break;
-      case 'Jul': month = 7; break;
-      case 'Aug': month = 8; break;
-      case 'Sep': month = 9; break;
-      case 'Oct': month = 10; break;
-      case 'Nov': month = 11; break;
-      default: month = 12; break;
-    }
-    return date[3] + '. ' + month + '. ' + date[2] + '. ';
-  }
+    
+    await storeService.collection('videos').doc(vid)
+                      .collection('comments').doc(commentID).set({...comment});
 
-  const onThumbUpClick = async () => {
-    if(!props.user) alert('로그인이 필요합니다.');
-    const ref = storeService.collection('videos').doc(vid);
-
-    await ref.get().then(async function (doc) {
-      var likes = doc.data().likes;
-
-      if(isLiked) {
-        likes--;
-        await ref.collection('liked').doc(props.user.uid).delete();
-        await storeService.collection('users').doc(props.user.uid)
-                        .collection('likedVideos').doc(vid).delete();
-      } else {
-        likes++;
-        await ref.collection('liked').doc(props.user.uid).set({
-          clicked: Date.now()
-        })
-        await storeService.collection('users').doc(props.user.uid)
-                        .collection('likedVideos').doc(vid).set({
-                          liked: Date.now()
-                        });
-      }
-  
-      await ref.update({ likes });
-    })
-
-    setIsLiked(!isLiked);
+    setComments([{
+      id: commentID, ...comment
+    }, ...comments]);
+    setMyComment('');
   }
 
   return (
-    <Container>
+    <Container key='video'>
       {loaded && <>
         <Box flex='0.6'>
           <IframeBox>
@@ -140,20 +122,37 @@ function Video(props) {
 
           <SongTitle>{video.song}</SongTitle>
 
-          <SubTitle>
-            {video.views ? viewsToString(video.views) : viewsToString(0)
-            } • {
-            dateToString(video.createdAt)
-            } • 좋아요 : {video.likes}
-            <ThumbUp 
-              size='18' color={isLiked ? 'blue' : 'grey'}
-              onClick={onThumbUpClick}
-            />
-          </SubTitle>
+          <ViewsAndLikes 
+            video={video} 
+            singer={singer}
+            user={props.user}
+            isLiked={isLiked}
+            setIsLiked={setIsLiked}
+          />
         </Box>
 
         <Box flex='0.4'>
-          aaa
+          <div style={{marginBottom:'20px'}}>
+            {props.user ? 
+              <WriteComment>
+                <Box flex='0.8' style={{padding:'10px'}}>
+                  <CommentBox value={myComment} onChange={(e) => setMyComment(e.target.value)}/>
+                </Box>
+                <Box flex='0.2' style={{padding:'10px'}}>
+                  <Button onClick={() => onWriteComment()}>
+                    댓글입력
+                  </Button>
+                </Box>
+              </WriteComment> 
+              : <>
+              <Box flex='1' style={{border:'1px solid lightgrey'}}>
+                로그인 후 댓글 작성 가능
+              </Box>
+            </>}
+          </div>
+          {comments.length === 0 ? <>댓글이 없습니다.</> : <>
+            {comments.map((comment) => <Comment key={comment.id} user={props.user} comment={comment}/>)}
+          </>}
         </Box>
       </>}
     </Container>
@@ -185,13 +184,15 @@ const Iframe = styled.iframe`
 const SongTitle = styled.h2`
   padding-left: 10px;
 `
-const SubTitle = styled.h4`
-  padding-left: 10px;
-  margin: 0;
-  color: grey;
-  font-weight: 300;
+const WriteComment = styled.div`
+  display: flex;
 `
-const ThumbUp = styled(MdThumbUp)`
-  padding-left: 20px;
-  cursor: pointer;
+const CommentBox = styled.textarea`
+  width: 100%;
+  height: 100px;
+  resize: none;
+`
+const Button = styled.button`
+  width: 100%;
+  height: 100%;
 `
