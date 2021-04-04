@@ -8,7 +8,6 @@ import TvProgram from '../components/home/contents/tv-program/TvProgram'
 import Video from 'src/components/home/contents/video/Video'
 import HomeContents from '../components/home/contents/main/HomeContents'
 
-
 function Home(props) {
   const switchPage = (prop) => {
     switch(prop) {

@@ -15,5 +15,5 @@ exports.dateToString = function (time) {
     case 'Nov': month = 11; break;
     default: month = 12; break;
   }
-  return date[3] + '. ' + month + '. ' + date[2] + '. ';
+  return date[3] + '. ' + month + '. ' + date[2] + '. ' + date[4];
 }

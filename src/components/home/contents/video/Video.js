@@ -20,6 +20,7 @@ function Video(props) {
   const [myComment, setMyComment] = useState('');
 
   const [value, setValue] = useState(0);
+  const [delay, setDelay] = useState(false);
 
   async function init() {
     const ref = storeService.collection('videos').doc(vid);
@@ -86,6 +87,14 @@ function Video(props) {
   }
 
   async function onWriteComment() {
+    if(myComment === '') return;
+  
+    if(delay) {
+      alert('5초 이내 작성/삭제 가 불가능합니다.'); return;
+    } else {
+      setDelay(true); setTimeout(() => setDelay(false), 5000);
+    }
+
     const commentID = uuid()
     const comment = {
       uid: props.user.uid,
@@ -95,20 +104,70 @@ function Video(props) {
       createdAt: Date.now()
     };
 
-    
-    await storeService.collection('videos').doc(vid)
-                      .collection('comments').doc(commentID).set({...comment});
-
     setComments([{
       id: commentID, ...comment
     }, ...comments]);
     setMyComment('');
+
+    const ref = storeService.collection('videos').doc(vid);
+
+    await ref.get().then(function (doc) {
+      var commentsCount = doc.data().commentsCount;
+      var v = video;
+
+      if(commentsCount === undefined) 
+        commentsCount = 1;
+      else
+        commentsCount++;
+
+      v.commentsCount = commentsCount;
+      setVideo(v);
+      ref.update({ commentsCount })
+    })
+    await ref.collection('comments').doc(commentID).set({...comment});
+
+    
+  }
+
+  async function onDeleteComment(id) {
+    if(delay) {
+      alert('5초 이내 작성/삭제 가 불가능합니다.'); return;
+    } else {
+      setDelay(true); setTimeout(() => setDelay(false), 5000);
+    }
+    
+    const ref = storeService.collection('videos').doc(vid);
+
+    var flag = true;
+    var array = [];
+    for(var i=0; i<comments.length; i++) {
+      if(id !== comments[i].id) {
+        array.push(comments[i]);
+      } else {
+        flag = false;
+      }
+    }
+    if(flag) return;
+    setComments(array);
+
+    await ref.get().then(function (doc) {
+      if(!doc.exists) return;
+
+      var commentsCount = doc.data().commentsCount - 1;
+      var v = video; v.commentsCount = commentsCount;
+
+      ref.update({ commentsCount })
+      setVideo(v);
+    })
+    await ref.collection('comments').doc(id).delete();
+
+    setComments(array);    
   }
 
   return (
     <Container key='video'>
       {loaded && <>
-        <Box flex='0.6'>
+        <Box flex='0.6'>    
           <IframeBox>
             <Iframe 
               src={`https://www.youtube.com/embed/${vid}?autoplay=1`}
@@ -132,7 +191,7 @@ function Video(props) {
         </Box>
 
         <Box flex='0.4'>
-          <div style={{marginBottom:'20px'}}>
+          <div style={{marginBottom:'10px'}}>
             {props.user ? 
               <WriteComment>
                 <Box flex='0.8' style={{padding:'10px'}}>
@@ -150,9 +209,19 @@ function Video(props) {
               </Box>
             </>}
           </div>
-          {comments.length === 0 ? <>댓글이 없습니다.</> : <>
-            {comments.map((comment) => <Comment key={comment.id} user={props.user} comment={comment}/>)}
-          </>}
+
+          <div>댓글 {video.commentsCount}개</div>
+          <div style={{height:'60vh', overflowY:'scroll'}}>
+            {comments.length === 0 ? <>댓글이 없습니다.</> : <>
+              {comments.map((comment) => 
+                <Comment key={comment.id} 
+                        user={props.user} 
+                        comment={comment}
+                        onDeleteComment={onDeleteComment}
+                        />
+              )}
+            </>}
+          </div>
         </Box>
       </>}
     </Container>
@@ -164,12 +233,13 @@ export default Video
 const Container = styled.div`
   flex: 1;
   display: flex;
+  height: 100%;
   background-color: #f9f9f9;
-  padding: 10px;
+  padding: 0 10px;
 `
 const Box = styled.div`
   flex: ${(props) => props.flex || 1};
-  padding: 20px;
+  padding: 10px;
 `
 const IframeBox = styled.div`
   position: relative;
