@@ -11,6 +11,7 @@ import Comment from './Comment'
 
 function Video(props) {
   const { vid } = useParams();
+  const ref = storeService.collection('videos').doc(vid);
 
   const [loaded, setLoaded] = useState(false);
   const [video, setVideo] = useState(null);
@@ -21,28 +22,30 @@ function Video(props) {
 
   const [value, setValue] = useState(0);
   const [delay, setDelay] = useState(false);
+  const [more, setMore] = useState(true);
 
   async function init() {
-    const ref = storeService.collection('videos').doc(vid);
+    var array = [];
+    var length = 0;
 
     await ref.get().then(function (doc) {
       setVideo({...doc.data()});
     })
 
     await ref.collection('singer').get().then(function (snapshot) {
-      var array = [];
       snapshot.forEach(function (singer) {
         array.push({
           ...singer.data(),
           id: singer.id
         })
+        length = singer.data().commentsCount;
       })
       setSinger(array);
     })
 
-    await ref.collection('comments').orderBy('createdAt', 'desc').limit(20)
+    await ref.collection('comments').orderBy('createdAt', 'desc').limit(10)
       .get().then(function(snapshot) {
-        var array = [];
+        array = [];
         snapshot.forEach(function (data) {
           array.push({
             ...data.data(),
@@ -52,13 +55,14 @@ function Video(props) {
         setComments(array);
       })
 
+    if(array.length === length) setMore(false);
+
     setLoaded(true);
     setTimeout(() => setValue(value + 1), 1500);
     setTimeout(() => upViews(), 60000);
   }
 
   async function getLiked() {
-    const ref = storeService.collection('videos').doc(vid);
     if(props.user !== null) {
       await ref.collection('liked').doc(props.user.uid).get().then(function (doc) {
         setIsLiked(doc.exists);
@@ -71,9 +75,7 @@ function Video(props) {
     getLiked();
   }, [value, props.user])
   
-  async function upViews() {  
-    const ref = storeService.collection('videos').doc(vid);
-
+  async function upViews() {
     await ref.get().then(function (doc) {
       var views = doc.data().views;
       
@@ -90,9 +92,9 @@ function Video(props) {
     if(myComment === '') return;
   
     if(delay) {
-      alert('5초 이내 작성/삭제 가 불가능합니다.'); return;
+      alert('3초 이내 작성/삭제 가 불가능합니다.'); return;
     } else {
-      setDelay(true); setTimeout(() => setDelay(false), 5000);
+      setDelay(true); setTimeout(() => setDelay(false), 3000);
     }
 
     const commentID = uuid()
@@ -109,8 +111,6 @@ function Video(props) {
     }, ...comments]);
     setMyComment('');
 
-    const ref = storeService.collection('videos').doc(vid);
-
     await ref.get().then(function (doc) {
       var commentsCount = doc.data().commentsCount;
       var v = video;
@@ -125,21 +125,18 @@ function Video(props) {
       ref.update({ commentsCount })
     })
     await ref.collection('comments').doc(commentID).set({...comment});
-
-    
   }
 
   async function onDeleteComment(id) {
     if(delay) {
-      alert('5초 이내 작성/삭제 가 불가능합니다.'); return;
+      alert('3초 이내 작성/삭제 가 불가능합니다.'); return;
     } else {
-      setDelay(true); setTimeout(() => setDelay(false), 5000);
+      setDelay(true); setTimeout(() => setDelay(false), 3000);
     }
     
-    const ref = storeService.collection('videos').doc(vid);
-
     var flag = true;
     var array = [];
+
     for(var i=0; i<comments.length; i++) {
       if(id !== comments[i].id) {
         array.push(comments[i]);
@@ -147,6 +144,7 @@ function Video(props) {
         flag = false;
       }
     }
+
     if(flag) return;
     setComments(array);
 
@@ -162,6 +160,31 @@ function Video(props) {
     await ref.collection('comments').doc(id).delete();
 
     setComments(array);    
+  }
+
+  async function getMoreComments() {
+    if(delay) {
+      alert('3초 이내 재작동이 불가능합니다.'); return;
+    } else {
+      setDelay(true); setTimeout(() => setDelay(false), 3000);
+    }
+
+    var array = comments.slice();
+    
+    await ref.collection('comments').orderBy('createdAt', 'desc')
+            .startAfter(comments[comments.length-1].createdAt).limit(10)
+            .get().then(function (snapshot) {
+              snapshot.forEach(function (data) {
+                array.push({
+                  ...data.data(),
+                  id: data.id
+                })
+              })
+
+              if(array.length === video.commentsCount) setMore(false);
+              setComments(array);
+            })
+    
   }
 
   return (
@@ -187,11 +210,12 @@ function Video(props) {
             user={props.user}
             isLiked={isLiked}
             setIsLiked={setIsLiked}
+            setVideo={setVideo}
           />
         </Box>
 
         <Box flex='0.4'>
-          <div style={{marginBottom:'10px'}}>
+          <div>
             {props.user ? 
               <WriteComment>
                 <Box flex='0.8' style={{padding:'10px'}}>
@@ -210,7 +234,7 @@ function Video(props) {
             </>}
           </div>
 
-          <div>댓글 {video.commentsCount}개</div>
+          <div style={{marginBottom:'10px'}}>댓글 {video.commentsCount}개</div>
           <div style={{height:'60vh', overflowY:'scroll'}}>
             {comments.length === 0 ? <>댓글이 없습니다.</> : <>
               {comments.map((comment) => 
@@ -220,6 +244,9 @@ function Video(props) {
                         onDeleteComment={onDeleteComment}
                         />
               )}
+              {more &&
+                <MoreCommentsButton onClick={() => getMoreComments()}>더 보기</MoreCommentsButton>
+              }
             </>}
           </div>
         </Box>
@@ -261,8 +288,17 @@ const CommentBox = styled.textarea`
   width: 100%;
   height: 100px;
   resize: none;
+  padding: 0;
+  margin: 0;
 `
 const Button = styled.button`
   width: 100%;
-  height: 100%;
+  height: 100px;
+  padding: 0;
+  margin: 0;
+`
+const MoreCommentsButton = styled.button`
+  width: 100%;
+  height: 50px;
+  margin-top: 10px;
 `

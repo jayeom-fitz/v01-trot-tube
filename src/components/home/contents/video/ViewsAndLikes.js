@@ -42,7 +42,8 @@ function ViewsAndLikes(props) {
                           liked: Date.now()
                         });
       }
-  
+      
+      var v = props.video; v.likes = likes; props.setVideo(v);
       await ref.update({ likes });
     })
 

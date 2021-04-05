@@ -40,7 +40,7 @@ function Header(props) {
       <Icons>
         {props.user ? (
           <>
-            <NotificationIcon size="24"/>
+            {/* <NotificationIcon size="24"/> */}
           </>
         ) : null}
         

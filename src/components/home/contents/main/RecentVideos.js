@@ -31,12 +31,14 @@ const Container = styled.div`
   margin-top: 20px;
 `
 const Title = styled.h2`
-  
+  text-align: center;
+  padding-top: 20px;
 `
 const Content = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 `
 const VideoBox = styled.div`
   width: 250px;
