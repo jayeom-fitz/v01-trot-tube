@@ -22,14 +22,17 @@ function Sidebar() {
         link=''
         iconName={AiFillHome} 
         title="홈"/>
-      <SidebarRow iconName={ImFire} title="인기"/>
-      <SidebarRow iconName={MdSubscriptions} title="구독"/>
+      <SidebarRow 
+        link='/hot'
+        iconName={ImFire} 
+        title="인기"/>
+      {/* <SidebarRow iconName={MdSubscriptions} title="구독"/> */}
 
       <Line />
 
-      <SidebarRow iconName={RiVideoFill} title="보관함"/>
+      {/* <SidebarRow iconName={RiVideoFill} title="보관함"/> */}
       <SidebarRow iconName={MdVideoLibrary} title="내 재생 목록"/>
-      <SidebarRow iconName={MdWatchLater} title="나중에"/>
+      {/* <SidebarRow iconName={MdWatchLater} title="나중에"/> */}
       <SidebarRow iconName={RiThumbUpFill} title="좋아요"/>
           
     </Container>

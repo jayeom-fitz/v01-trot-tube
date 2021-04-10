@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import styled from "styled-components";
 
+import { dateToString2 } from "src/func"
+
 function RecentVideos(props) {
   return (
     <Container>
@@ -15,6 +17,7 @@ function RecentVideos(props) {
               <Image src={`http://img.youtube.com/vi/${video.id}/0.jpg`} />
               <Singer>{video.singer}</Singer>
               <Song>{video.song}</Song>
+              <WriteTime>{dateToString2(video.createdAt)}</WriteTime>
             </VideoBox>
           </Link>
         ))}
@@ -27,8 +30,7 @@ export default RecentVideos
 
 const Container = styled.div`
   width: 100%;
-  padding: 20px;
-  margin-top: 20px;
+  margin-top: 50px;
 `
 const Title = styled.h2`
   text-align: center;
@@ -60,5 +62,10 @@ const Singer = styled.h4`
 `
 const Song = styled.h4`
   color: black;
+  margin: 5px;
+`
+const WriteTime = styled.h4`
+  color: grey;
+  font-size: 0.6rem;
   margin: 5px;
 `

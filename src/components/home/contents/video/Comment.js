@@ -1,10 +1,9 @@
-import React, { useState } from 'react' 
-import { useParams, Link } from "react-router-dom";
+import React from 'react' 
+import { Link } from "react-router-dom";
 
 import styled from "styled-components";
 
-import { storeService } from "src/fbase";
-import { dateToString } from "src/func"
+import { dateToString2 } from "src/func"
 
 import Avatar from "@material-ui/core/Avatar";
 import { ImCross } from 'react-icons/im'
@@ -32,7 +31,7 @@ function Comment(props) {
           </div>}
 
           <WriteDate>
-            {dateToString(props.comment.createdAt)}
+            {dateToString2(props.comment.createdAt)}
           </WriteDate>
         </div>
 

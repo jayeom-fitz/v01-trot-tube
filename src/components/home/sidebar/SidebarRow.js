@@ -13,7 +13,7 @@ const Icon = styled(MaterialIcon)`
 
 function SidebarRow({ iconName, title, link }) {  
   return (
-    <Link to={`/${link}`} style={{textDecoration:'none'}}>
+    <Link to={`${link}`} style={{textDecoration:'none'}}>
       <Container>
         <Icon iconName={iconName} />
         <Content>{title}</Content>

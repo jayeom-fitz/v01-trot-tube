@@ -15,6 +15,10 @@ function AppRouter(props) {
         <Route path="/login" component={Login}/>
         
         <Route 
+          path="/hot"
+          render={() => <Home user={props.user} pageName='hot'/>}/>
+
+        <Route 
           path="/user/:uid"
           render={() => <Home user={props.user} pageName='user'/>}/>
 
@@ -25,7 +29,7 @@ function AppRouter(props) {
         <Route 
           path="/video/:vid"
           render={() => <Home user={props.user} pageName='video'/>}/>
-
+       
         <Route exact path="/admin/" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent/:id" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent" ><Admin user={props.user} /></Route>
