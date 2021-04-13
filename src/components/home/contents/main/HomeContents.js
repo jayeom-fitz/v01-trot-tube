@@ -56,7 +56,7 @@ function HomeContents(props) {
   function init() {
     getTvPrograms(); 
     getRecentVideos();
-    setTimeout(() => setLoaded(true), 1500);  
+    setTimeout(() => setLoaded(true), 1000); 
   }
 
   useEffect(() => {

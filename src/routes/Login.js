@@ -18,16 +18,28 @@ function Login() {
       provider = new firebaseInstance.auth.GithubAuthProvider();
     }
 
-    const data = await authService.signInWithPopup(provider);
+    // const data = await authService.signInWithPopup(provider);
 
-    if(data.additionalUserInfo.isNewUser) {
-      await storeService.collection("users").doc(data.user.uid).set({
-        nickname : data.user.displayName,
-        photoURL : data.user.photoURL,
-        joinDate : Date.now(),
-        verified : 0,
-      });
-    }   
+    // if(data.additionalUserInfo.isNewUser) {
+    //   await storeService.collection("users").doc(data.user.uid).set({
+    //     nickname : data.user.displayName,
+    //     photoURL : data.user.photoURL,
+    //     joinDate : Date.now(),
+    //     verified : 0,
+    //   });
+    // }   
+
+    await authService.signInWithPopup(provider).then(async function (data){
+      if(data.additionalUserInfo.isNewUser) {
+        await storeService.collection("users").doc(data.user.uid).set({
+          nickname : data.user.displayName,
+          photoURL : data.user.photoURL,
+          joinDate : Date.now(),
+          verified : 0,
+        });
+      }   
+    })
+    
   }
   
   if(authService.currentUser != null) {
