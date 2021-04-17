@@ -9,7 +9,7 @@ import Video from 'src/components/home/contents/video/Video'
 import HomeContents from '../components/home/contents/main/HomeContents'
 import Hot from 'src/components/home/contents/hot/Hot'
 import Like from 'src/components/home/contents/like/Like'
-import List from 'src/components/home/contents/list/List'
+import GuestBook from 'src/components/home/contents/guestbook/GuestBook'
 
 function Home(props) {
   const switchPage = (prop) => {
@@ -19,7 +19,7 @@ function Home(props) {
       case 'video' : return <Video user={props.user} />
       case 'hot' : return <Hot />
       case 'like' : return <Like user={props.user} />
-      case 'list' : return <List user={props.user} />
+      case 'guestbook' : return <GuestBook user={props.user} />
       default : return <HomeContents user={props.user} />
     }
   }

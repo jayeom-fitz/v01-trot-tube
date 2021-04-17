@@ -6,8 +6,8 @@ import SidebarRow from './SidebarRow';
 
 import { ImCross, ImFire } from 'react-icons/im'
 import { AiFillHome } from 'react-icons/ai'
-import { MdSubscriptions, MdVideoLibrary, MdWatchLater } from 'react-icons/md'
-import { RiVideoFill, RiThumbUpFill } from 'react-icons/ri'
+import { RiThumbUpFill } from 'react-icons/ri'
+import { BiBookHeart } from 'react-icons/bi'
 
 function Sidebar() {  
   return (
@@ -28,22 +28,17 @@ function Sidebar() {
         iconName={ImFire} 
         title="인기"/>
 
-      {/* <SidebarRow iconName={MdSubscriptions} title="구독"/> */}
-
-      <Line />
-
       <SidebarRow 
         link='/like'
         iconName={RiThumbUpFill} 
         title="좋아요"/>
 
       <SidebarRow 
-        link='/list'
-        iconName={MdVideoLibrary} 
-        title="내 재생 목록"/>
-
-      {/* <SidebarRow iconName={RiVideoFill} title="보관함"/> */}
-      {/* <SidebarRow iconName={MdWatchLater} title="나중에"/> */}
+        link='/guestbook'
+        iconName={BiBookHeart} 
+        title=">> 방명록 <<"/>
+      
+      <Line />
           
     </Container>
   )

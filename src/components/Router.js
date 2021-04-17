@@ -23,8 +23,8 @@ function AppRouter(props) {
           render={() => <Home user={props.user} pageName='like'/>}/>
 
         <Route 
-          path="/list"
-          render={() => <Home user={props.user} pageName='list'/>}/>
+          path="/guestbook"
+          render={() => <Home user={props.user} pageName='guestbook'/>}/>
 
         <Route 
           path="/user/:uid"
