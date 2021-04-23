@@ -4,12 +4,30 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { FiMenu, FiSearch } from 'react-icons/fi' 
-import { IoNotifications } from 'react-icons/io5'
 
 import UserIcon from './UserIcon';
 
 function Header(props) {
   const [inputSearch, setInputSearch] = useState('');
+
+  function onSubmit(e) {
+    if(inputSearch === '') {
+      alert('값을 입력해주세요'); 
+      document.getElementById('searchBar').focus(); 
+      e.preventDefault();
+    } else if(inputSearch.split(' ').length > 2) {
+      alert('두 단어 이하로 입력해주세요'); 
+      document.getElementById('searchBar').focus(); 
+      e.preventDefault();
+    }
+  }
+
+  function changeStr() {
+    const str = inputSearch.split(' ');
+
+    if(str.length === 1) return str[0];
+    else return str[0] + '+' + str[1];
+  }
 
   return (
     <Container>
@@ -27,23 +45,18 @@ function Header(props) {
       <ContainerInput>
         <Input 
           type="text" 
-          placeholder="Search" 
+          placeholder="Search"
+          id="searchBar"
           value={inputSearch}
           onChange={e => setInputSearch(e.target.value)}
         />
 
-        <InputLink to={inputSearch && `/search/${inputSearch}`} >
-          <FiSearchIcon size="18" />
-        </InputLink>
+        <form onSubmit={(e) => onSubmit(e)} action={`/search/${changeStr()}`}>
+          <Button><FiSearchIcon size="18" /></Button>
+        </form>
       </ContainerInput>
 
-      <Icons>
-        {props.user ? (
-          <>
-            {/* <NotificationIcon size="24"/> */}
-          </>
-        ) : null}
-        
+      <Icons>        
         <UserIcon user={props.user}/>
       </Icons>
     </Container>
@@ -98,12 +111,12 @@ const Input = styled.input`
     outline: 2px solid lightskyblue;
   }  
 `
-const InputLink = styled(Link)`
+const Button = styled.button`
   display: flex;
-  width: 50px !important;
+  width: 50px;
   height: 30px;
-  border-left: 1px solid lightgray;
   align-items: center;
+  border: none;
 
   &:focus {
     outline: none;
@@ -117,7 +130,4 @@ const InputLink = styled(Link)`
 const Icons = styled.div`
   display: flex;
   align-items: center;
-`
-const NotificationIcon = styled(IoNotifications)`
-  margin-right: 10px;
 `

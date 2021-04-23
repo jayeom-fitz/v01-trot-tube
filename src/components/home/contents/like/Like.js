@@ -64,7 +64,6 @@ function Like(props) {
     }
     
     var array = videos.slice();
-    var length = array.length;
 
     const ref = storeService.collection('users').doc(props.user.uid);
     const vref = storeService.collection('videos');

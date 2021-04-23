@@ -37,6 +37,10 @@ function AppRouter(props) {
         <Route 
           path="/video/:vid"
           render={() => <Home user={props.user} pageName='video'/>}/>
+
+        <Route 
+          path="/search/:searchContent"
+          render={() => <Home user={props.user} pageName='search'/>}/>
        
         <Route exact path="/admin/" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent/:id" ><Admin user={props.user} /></Route>

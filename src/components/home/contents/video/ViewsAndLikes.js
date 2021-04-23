@@ -4,21 +4,12 @@ import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { storeService } from "src/fbase";
-import { dateToString } from "src/func"
+import { dateToString, viewsToString } from "src/func"
 
 import { MdThumbUp } from 'react-icons/md'
 
 function ViewsAndLikes(props) {
   const { vid } = useParams();
-
-  function viewsToString(views) {
-    views = parseInt(views);
-    var v = views % 1000; views = parseInt(views/1000);
-    for(;views !== 0; views = parseInt(views/1000)) {
-      v = views % 1000 + ',' + v;
-    }
-    return '조회수 : ' + v + '회';
-  }
 
   const onThumbUpClick = async () => {
     if(!props.user) alert('로그인이 필요합니다.');

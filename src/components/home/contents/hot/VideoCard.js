@@ -69,13 +69,3 @@ const Content = styled.h4`
   padding-left: 50px;
   color: ${(props) => props.color || 'black'};
 `
-
-const UserName = styled.h4`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;  
-`
-const JoinDate = styled.p`
-  color: #606060;
-  font-size: small !important;
-`
