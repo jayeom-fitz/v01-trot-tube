@@ -26,6 +26,8 @@ function AppRouter(props) {
           path="/guestbook"
           render={() => <Home user={props.user} pageName='guestbook'/>}/>
 
+
+
         <Route 
           path="/user/:uid"
           render={() => <Home user={props.user} pageName='user'/>}/>
@@ -41,7 +43,13 @@ function AppRouter(props) {
         <Route 
           path="/search/:searchContent"
           render={() => <Home user={props.user} pageName='search'/>}/>
+
+        <Route 
+          path="/person/:pid"
+          render={() => <Home user={props.user} pageName='person'/>}/>
        
+
+
         <Route exact path="/admin/" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent/:id" ><Admin user={props.user} /></Route>
         <Route path="/admin/:startComponent" ><Admin user={props.user} /></Route>

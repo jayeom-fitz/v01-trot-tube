@@ -11,6 +11,7 @@ import Hot from 'src/components/home/contents/hot/Hot'
 import Like from 'src/components/home/contents/like/Like'
 import GuestBook from 'src/components/home/contents/guestbook/GuestBook'
 import Search from 'src/components/home/contents/search/Search'
+import Person from 'src/components/home/contents/person/Person'
 
 function Home(props) {
   const switchPage = (prop) => {
@@ -22,6 +23,7 @@ function Home(props) {
       case 'like' : return <Like user={props.user} />
       case 'guestbook' : return <GuestBook user={props.user} />
       case 'search' : return <Search />
+      case 'person' : return <Person user={props.user} />
       default : return <HomeContents user={props.user} />
     }
   }

@@ -100,7 +100,7 @@ function Search() {
     }
 
     setTimeout(() => {
-      setSearch([...search, ...array]);
+      setSearch(array);
     }, 1000);
 
   }
