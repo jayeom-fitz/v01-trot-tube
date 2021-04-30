@@ -19,7 +19,7 @@ function People() {
 
   async function getPeople() {
     let arr = [];
-    await storeService.collection('people').get().then(function (snapshot) {  
+    await storeService.collection('people').orderBy('name', 'asc').get().then(function (snapshot) {  
       snapshot.forEach(doc => 
         arr.push({
           id: doc.id, 
