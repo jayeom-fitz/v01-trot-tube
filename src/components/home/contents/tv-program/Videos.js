@@ -25,7 +25,7 @@ function Videos(props) {
               />
               <PersonRowContent>
                 <ContentTitle>{props.person.name}</ContentTitle> 
-                <Link to={`/ch/${props.person.id}`} >
+                <Link to={`/person/${props.person.id}`} >
                   <Button>채널로...</Button>
                 </Link>
                 {props.person && props.verified === 2 &&

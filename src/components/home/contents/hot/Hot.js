@@ -13,60 +13,69 @@ function Hot() {
   async function getHotVideos() {
     const ref = storeService.collection('videos');
 
+    var array = [];
+
     await ref.where('likes', '>=', 1).orderBy('likes', 'desc').limit(10).get()
       .then(function (snapshot) {
-        var array = []; var index = 1;
-        snapshot.forEach(async function(doc) {
-          var singer = '';
-
-          await ref.doc(doc.id).collection('singer').get().then(function (p) {
-            p.forEach(function(person) {
-              if(singer === '') singer = person.data().name;
-              else singer = singer + ', ' + person.data().name;
-            })
-          })
-
+        var index = 1;
+        snapshot.forEach(function(doc) {
           array.push({
             ...doc.data(),
             id: doc.id,
-            index: index++,
-            singer
+            index: index++
           })
         })
-        setHotVideoByLike(array);
+        
       })
+
+    for(var i=0; i<array.length; i++) {
+      var singer = '';
+
+      await storeService.collection('videos').doc(array[i].id)
+        .collection('singer').get().then(function (p) {
+          p.forEach(function(person) {
+            if(singer === '') singer = person.data().name;
+            else singer = singer + ', ' + person.data().name;
+          })
+        })
+      
+      array[i].singer = singer;
+    }
+
+    setHotVideoByLike(array); array = [];
 
     await ref.where('views', '>=', 1).orderBy('views', 'desc').limit(10).get()
       .then(function (snapshot) {
-        var array = []; var index = 1;
-        snapshot.forEach(async function(doc) {
-          var singer = '';
-          
-          await ref.doc(doc.id).collection('singer').get().then(function (p) {
-            p.forEach(function(person) {
-              if(singer === '') singer = person.data().name;
-              else singer = singer + ', ' + person.data().name;
-            })
-          })
-
+        var index = 1;
+        snapshot.forEach(function(doc) {
           array.push({
             ...doc.data(),
             id: doc.id,
             index: index++,
-            singer
           }) 
         })
-        setHotVideoByView(array);
+        
       })
-  }
+    
+    for(var i=0; i<array.length; i++) {
+      var singer = '';
+  
+      await storeService.collection('videos').doc(array[i].id)
+        .collection('singer').get().then(function (p) {
+          p.forEach(function(person) {
+            if(singer === '') singer = person.data().name;
+            else singer = singer + ', ' + person.data().name;
+          })
+      })
+       
+      array[i].singer = singer;
+    }
 
-  function init() {
-    getHotVideos(); 
-    setTimeout(() => setLoaded(true), 1500);  
+    setHotVideoByView(array); setLoaded(true);
   }
 
   useEffect(() => {
-    init();
+    getHotVideos(); 
   }, [])
 
   return (

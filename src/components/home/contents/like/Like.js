@@ -21,39 +21,37 @@ function Like(props) {
 
     await ref.collection('likedVideos').orderBy('liked', 'desc').limit(10).get()
       .then(function (snapshot) {
-        snapshot.forEach(async function(doc) {
-          var singer = '';
-          var data ;
-          
-          await vref.doc(doc.id).get().then(function(d) {
-            data = d.data();
-          });
-
-          await vref.doc(doc.id).collection('singer').get().then(function (p) {
-            p.forEach(function(person) {
-              if(singer === '') singer = person.data().name;
-              else singer = singer + ', ' + person.data().name;
-            })
-          })
-
+        snapshot.forEach(function(doc) {
           array.push({
-            ...doc.data(), ...data,
+            ...doc.data(), 
             id: doc.id,
-            singer
           })
         })
       })
     
-    setVideos(array);
-  }
+    for(var i=0; i<array.length; i++) {
+      var singer = '';  var data;
+    
+      await vref.doc(array[i].id).collection('singer').get().then(function (p) {
+        p.forEach(function(person) {
+          if(singer === '') singer = person.data().name;
+          else singer = singer + ', ' + person.data().name;
+        })
+      })
 
-  function init() {
-    getVideos(); 
-    setTimeout(() => setLoaded(true), 1000); 
+      await vref.doc(array[i].id).get().then(function(d) {
+        data = d.data();
+      });
+       
+      array[i].singer = singer;
+      array[i] = {...array[i], ...data}
+    }
+    
+    setVideos(array); setLoaded(true);
   }
 
   useEffect(() => {
-    if(props.user) init();
+    if(props.user) getVideos(); 
   }, [props.user])
 
   const moreVideos = async () => {
@@ -63,7 +61,7 @@ function Like(props) {
       setDelay(true); setTimeout(() => setDelay(false), 1000);
     }
     
-    var array = videos.slice();
+    var array = [];
 
     const ref = storeService.collection('users').doc(props.user.uid);
     const vref = storeService.collection('videos');
@@ -71,31 +69,35 @@ function Like(props) {
     await ref.collection('likedVideos').orderBy('liked', 'desc')
       .startAfter(videos[videos.length-1].liked).limit(10)
       .get().then(function (snapshot) {
-        snapshot.forEach(async function (doc) {
-          var singer = '';
-          var data ;
-          
-          await vref.doc(doc.id).get().then(function(d) {
-            data = d.data();
-          });
-
-          await vref.doc(doc.id).collection('singer').get().then(function (p) {
-            p.forEach(function(person) {
-              if(singer === '') singer = person.data().name;
-              else singer = singer + ', ' + person.data().name;
-            })
-          })
-
+        snapshot.forEach(function (doc) {
           array.push({
-            ...doc.data(), ...data,
+            ...doc.data(),
             id: doc.id,
-            singer
           })
         })
         
         if(snapshot.size === 0) setMore(false);
-        setVideos(array);
       })
+
+    for(var i=0; i<array.length; i++) {
+      var singer = '';  var data;
+      
+      await vref.doc(array[i].id).collection('singer').get().then(function (p) {
+        p.forEach(function(person) {
+          if(singer === '') singer = person.data().name;
+          else singer = singer + ', ' + person.data().name;
+        })
+      })
+  
+      await vref.doc(array[i].id).get().then(function(d) {
+        data = d.data();
+      });
+         
+      array[i].singer = singer;
+      array[i] = {...array[i], ...data}
+    }
+
+    setVideos([...videos, ...array]);
   }
 
   return (

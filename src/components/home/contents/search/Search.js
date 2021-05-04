@@ -14,20 +14,6 @@ function Search() {
   const [loaded, setLoaded] = useState(false);
   const [search, setSearch] = useState([]);
 
-  async function getSinger(id) {
-    var singer = '';
-          
-    await storeService.collection('videos').doc(id).collection('singer')
-      .get().then(function (p) {
-        p.forEach(function(person) {
-          if(singer === '') singer = person.data().name;
-          else singer = singer + ', ' + person.data().name;
-        })
-      })
-
-    return singer;
-  }
-
   async function getPerson(str) {
     const sum = str.length === 1 ? str[0] : str[0] + ' ' + str[1];
     var array = [];
@@ -49,60 +35,54 @@ function Search() {
     if(array.length === 0) {
       await vref.where('song', '>=', `${sum}`)
         .limit(10).get().then(function(snapshot) {
-          snapshot.forEach(async function(doc){
-            var singer = '';
-          
-            await vref.doc(doc.id).collection('singer')
-              .get().then(function (p) {
-                p.forEach(function(person) {
-                  if(singer === '') singer = person.data().name;
-                  else singer = singer + ', ' + person.data().name;
-                })
-              })
-    
+          snapshot.forEach( function(doc){
             array.push({
               ...doc.data(),
               id: doc.id,
-              isPerson: false,
-              singer
+              isPerson: false
             })
           })
         })
     } else {
+      var array2 = [];
       const length = array.length;
+
       for(var i=0; i<length; i++) {
         await pref.doc(array[i].id).collection('videos')
           .where('song', '>=', `${str.length === 1 ? '' : str[1]}`)
           .limit(5).get().then(function(snapshot) {
-            snapshot.forEach(async function(doc){
-              var singer = '';
-          
-              await vref.doc(doc.id).collection('singer')
-                .get().then(function (p) {
-                  p.forEach(function(person) {
-                    if(singer === '') singer = person.data().name;
-                    else singer = singer + ', ' + person.data().name;
-                  })
-                })
-
-              await vref.doc(doc.id).get().then(function (v) {
-                array.push({
-                  ...v.data(),
-                  id: doc.id,
-                  isPerson: false,
-                  singer
-                })
-              })
-
+            snapshot.forEach(function(doc){
+              array2.push(doc.id);
             })
           })
       }
+
+      for(var i=0; i<array2.length; i++) {
+        await vref.doc(array2[i]).get().then(function (v) {
+          array.push({
+            ...v.data(),
+            id: array2[i],
+            isPerson: false
+          })
+        })
+      }
     }
 
-    setTimeout(() => {
-      setSearch(array);
-    }, 1000);
+    for(var i=0; i<array.length; i++) {
+      if(array[i].isPerson) continue;
+      var singer = '';
+  
+      await pref.doc(array[i].id).collection('singer').get().then(function (p) {
+        p.forEach(function(person) {
+          if(singer === '') singer = person.data().name;
+          else singer = singer + ', ' + person.data().name;
+        })
+      })
+         
+      array[i].singer = singer;
+    }
 
+    setSearch(array);
   }
 
   async function getData() {

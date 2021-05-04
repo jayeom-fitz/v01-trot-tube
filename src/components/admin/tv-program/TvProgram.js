@@ -25,7 +25,7 @@ function TvProgram() {
   }
 
   async function getDirectories() {
-    var dir = []; var pp = []; var arr = [];
+    var dir = []; var pp = []; var arr = []; var array = [];
     const dirRef = storeService.collection('tv-programs').doc(id);
 
     await dirRef.collection('directories').get().then(function (snapshot) {
@@ -35,18 +35,26 @@ function TvProgram() {
     });
 
     await dirRef.collection('people').get().then(function (snapshot) {
-      snapshot.forEach(async function (doc) {
-        await storeService.collection('people').doc(doc.id).get().then(function (person) {
-          pp.push({
-            id: doc.id,
-            dir: doc.data().dir, 
-            name: person.data().name,
-            image: person.data().image,
-            onDB: true, updated: false
-          })      
-        }) 
+      snapshot.forEach(function (doc) {
+        array.push({
+          id: doc.id,
+          dir: doc.data().dir
+        })
       });
     });
+
+    for(var i=0; i<array.length; i++) {
+      await storeService.collection('people').doc(array[i].id).get().then(function (person) {
+        pp.push({
+          id: array[i].id,
+          dir: array[i].dir, 
+          name: person.data().name,
+          image: person.data().image,
+          onDB: true, updated: false
+        })      
+      }) 
+    }
+
 
     await storeService.collection('people').get().then(function (snapshot) {  
       snapshot.forEach(doc => {
@@ -70,7 +78,7 @@ function TvProgram() {
   function init() {
     getTvProgram(); 
     getDirectories();
-    setTimeout(() => setLoaded(true), 1000);  
+    setLoaded(true)
   }
 
   useEffect(() => init(), [])

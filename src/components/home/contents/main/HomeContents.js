@@ -32,31 +32,34 @@ function HomeContents(props) {
 
     await ref.orderBy('createdAt', 'desc').limit(20).get()
       .then(function (snapshot) {
-        snapshot.forEach(async function(doc) {
-          var singer = '';
-          
-          await ref.doc(doc.id).collection('singer').get().then(function (p) {
-            p.forEach(function(person) {
-              if(singer === '') singer = person.data().name;
-              else singer = singer + ', ' + person.data().name;
-            })
-          })
-
+        snapshot.forEach(function (doc) {
           array.push({
             ...doc.data(),
             id: doc.id,
-            singer
           })
         })
       })
-    
+      
+    for(var i=0; i<array.length; i++) {
+      var singer = '';
+  
+      await ref.doc(array[i].id).collection('singer').get().then(function (p) {
+        p.forEach(function(person) {
+          if(singer === '') singer = person.data().name;
+          else singer = singer + ', ' + person.data().name;
+        })
+      })
+         
+      array[i].singer = singer;
+    }
+
     setVideos(array);
   }
 
   function init() {
     getTvPrograms(); 
     getRecentVideos();
-    setTimeout(() => setLoaded(true), 1000); 
+    setLoaded(true);
   }
 
   useEffect(() => {

@@ -15,28 +15,31 @@ function ViewsAndLikes(props) {
     if(!props.user) alert('로그인이 필요합니다.');
     const ref = storeService.collection('videos').doc(vid);
 
-    await ref.get().then(async function (doc) {
-      var likes = doc.data().likes;
+    var likes;
 
-      if(props.isLiked) {
-        likes--;
-        await ref.collection('liked').doc(props.user.uid).delete();
-        await storeService.collection('users').doc(props.user.uid)
-                        .collection('likedVideos').doc(vid).delete();
-      } else {
-        likes++;
-        await ref.collection('liked').doc(props.user.uid).set({
-          clicked: Date.now()
-        })
-        await storeService.collection('users').doc(props.user.uid)
-                        .collection('likedVideos').doc(vid).set({
-                          liked: Date.now()
-                        });
-      }
-      
-      var v = props.video; v.likes = likes; props.setVideo(v);
-      await ref.update({ likes });
+    await ref.get().then(function (doc) {
+      likes = doc.data().likes;
     })
+
+    if(props.isLiked) {
+      likes--;
+      await ref.collection('liked').doc(props.user.uid).delete();
+      await storeService.collection('users').doc(props.user.uid)
+                      .collection('likedVideos').doc(vid).delete();
+    } else {
+      likes++;
+      await ref.collection('liked').doc(props.user.uid).set({
+        clicked: Date.now()
+      })
+      await storeService.collection('users').doc(props.user.uid)
+                      .collection('likedVideos').doc(vid).set({
+                        liked: Date.now()
+                      });
+    }
+    
+    var v = props.video; v.likes = likes; props.setVideo(v);
+    
+    await ref.update({ likes });
 
     props.setIsLiked(!props.isLiked);
   }

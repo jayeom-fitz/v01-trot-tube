@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
 import { storeService } from 'src/fbase'
 
 import Avatar from '@material-ui/core/Avatar'
+
+import { GoGear } from 'react-icons/go'
 
 import Videos from './Videos';
 import AddVideo from './AddVideo';
@@ -41,18 +43,21 @@ function TvProgram(props) {
 
     await dirRef.collection('people').get().then(function (snapshot) {
       var index = 0;
-      snapshot.forEach(async function (doc) {
-        await storeService.collection('people').doc(doc.id).get().then(function (person) {
-          pp.push({
-            id: doc.id,
-            dir: doc.data().dir, 
-            name: person.data().name,
-            image: person.data().image,
-            index: index++
-          })      
-        }) 
+      snapshot.forEach(function (doc) {
+        pp.push({ 
+          id: doc.id,
+          dir: doc.data().dir,
+          index: index++ 
+        })
       });
     });
+
+    for(var i=0; i<pp.length; i++) {
+      await storeService.collection('people').doc(pp[i].id).get().then(function (person) {
+        pp[i].name = person.data().name;
+        pp[i].image = person.data().image;  
+      })
+    }
 
     setDirectories(dir.sort(function (a,b) {
       return a.index - b.index;
@@ -62,8 +67,8 @@ function TvProgram(props) {
   function init() {
     getTvProgram(); 
     getDirectories();
+    setLoaded(true);
     setValue(value + 1);
-    setTimeout(() => setLoaded(true), 1500);  
   }
 
   useEffect(() => {
@@ -75,6 +80,7 @@ function TvProgram(props) {
   async function getVideosOfPerson(index) {
     if(person === null || (index !== person.index)) {
       setPerson(people[index]); setIsMore(true);
+      var array = []; var arr = [];
 
       await storeService.collection('people').doc(people[index].id)
         .collection('videos').where('tpid', '==', tpid).orderBy('createdAt', 'desc').limit(10)
@@ -82,23 +88,28 @@ function TvProgram(props) {
           if(snapshot.empty || snapshot.size % 10 !== 0) 
             setIsMore(false);
 
-          var arr = [];
-          snapshot.forEach(async function(doc) {
-            await storeService.collection('videos').doc(doc.id).get().then(function (video) {
-              arr.push({
-                ...video.data(),
-                id: doc.id
-              })      
-            }) 
+          snapshot.forEach(function (doc) {
+            arr.push(doc.id) 
           })
-          setVideos(arr);
         })
-      setTimeout(() => setValue(value + 1), 500);
+      
+      for(var i=0; i<arr.length; i++) {
+        await storeService.collection('videos').doc(arr[i]).get().then(function (video) {
+          array.push({
+            ...video.data(),
+            id: arr[i]
+          })      
+        }) 
+      }
+
+      setVideos(array); setValue(value + 1);
     }
     document.getElementById("videos").style.right = "0";
   }
 
   async function getMoreVideos() {
+    var array = []; var arr = [];
+
     await storeService.collection('people').doc(person.id)
       .collection('videos').where('tpid', '==', tpid)
       .orderBy('createdAt', 'desc').startAfter(videos[videos.length-1].createdAt).limit(10)
@@ -106,18 +117,21 @@ function TvProgram(props) {
         if(snapshot.empty || snapshot.size % 10 !== 0) 
           setIsMore(false);
 
-        var arr = videos.slice();
-        snapshot.forEach(async function(doc) {
-          await storeService.collection('videos').doc(doc.id).get().then(function (video) {
-            arr.push({
-              ...video.data(),
-              id: doc.id
-            })      
-          }) 
-        })
-        setVideos(arr);
+        snapshot.forEach(function (doc) {
+          arr.push(doc.id)  
+        }) 
       })
-    setTimeout(() => setValue(value + 1), 500);
+
+    for(var i=0; i<arr.length; i++) {
+      await storeService.collection('videos').doc(arr[i]).get().then(function (video) {
+        array.push({
+          ...video.data(),
+          id: arr[i]
+        })      
+      }) 
+    }
+
+    setVideos([...videos, ...array]); setValue(value + 1);
   } 
 
   return (
@@ -137,6 +151,11 @@ function TvProgram(props) {
 
         <Title>
           <Image src={tvProgram.image} />
+          {props.user && props.user.verified === 2 && <>
+            <Link to={`/admin/tv-program/${tpid}`}>
+              <GoGear color='black' size='24' />
+            </Link>
+          </>}
         </Title>
         
         <Directories>
