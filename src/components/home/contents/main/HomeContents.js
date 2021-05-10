@@ -6,6 +6,7 @@ import { storeService } from "src/fbase";
 
 import TvProgramSlider from './TvProgramSlider';
 import RecentVideos from './RecentVideos';
+import Loading from 'src/components/effect/Loading';
 
 function HomeContents(props) {
   const [loaded, setLoaded] = useState(false);
@@ -56,9 +57,9 @@ function HomeContents(props) {
     setVideos(array);
   }
 
-  function init() {
-    getTvPrograms(); 
-    getRecentVideos();
+  async function init() {
+    await getTvPrograms(); 
+    await getRecentVideos();
     setLoaded(true);
   }
 
@@ -68,9 +69,11 @@ function HomeContents(props) {
   
   return (
     <Container>
-      {loaded && <>
+      {loaded ? <>
         <TvProgramSlider user={props.user} tvs={tvs}/>
         <RecentVideos videos={videos} />
+      </> : <>
+        <Loading />
       </>}
     </Container>
   )

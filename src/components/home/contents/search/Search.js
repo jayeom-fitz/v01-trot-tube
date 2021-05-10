@@ -7,6 +7,7 @@ import { storeService } from "src/fbase";
 
 import PersonRow from './PersonRow';
 import VideoRow from './VideoRow';
+import Loading from 'src/components/effect/Loading';
 
 function Search() {
   const { searchContent } = useParams();
@@ -105,7 +106,7 @@ function Search() {
 
   return (
     <Container>
-      {loaded &&
+      {loaded ?
       <Content>
         {search && search.map((data) => 
           data.isPerson ? 
@@ -114,7 +115,9 @@ function Search() {
             <VideoRow key={data.id} video={data} />
         )}
       </Content>
-      }
+      : <>
+        <Loading />
+      </>}
     </Container>
   )
 }

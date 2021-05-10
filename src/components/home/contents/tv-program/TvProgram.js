@@ -8,9 +8,11 @@ import { storeService } from 'src/fbase'
 import Avatar from '@material-ui/core/Avatar'
 
 import { GoGear } from 'react-icons/go'
+import { VscLoading } from 'react-icons/vsc'
 
 import Videos from './Videos';
 import AddVideo from './AddVideo';
+import Loading from 'src/components/effect/Loading';
 
 function TvProgram(props) {
   const { tpid } = useParams();
@@ -64,9 +66,9 @@ function TvProgram(props) {
     })); setPeople(pp);
   }
 
-  function init() {
-    getTvProgram(); 
-    getDirectories();
+  async function init() {
+    await getTvProgram(); 
+    await getDirectories();
     setLoaded(true);
     setValue(value + 1);
   }
@@ -136,7 +138,7 @@ function TvProgram(props) {
 
   return (
     <Container>
-      {loaded && tvProgram && <>
+      {tvProgram && loaded ? <>
         {props.user && props.user.verified === 2 && person && <>
           <AddVideo person={person} />
         </>}
@@ -185,6 +187,8 @@ function TvProgram(props) {
             )
           }
         </Directories>
+      </> : <>
+      <Loading />
       </>}
     </Container>
   )
@@ -249,4 +253,7 @@ const Name = styled.h4`
   text-align: center;
   padding: 10px;
   margin: 0;
+`
+const StyledVscLoading = styled(VscLoading)`
+  
 `

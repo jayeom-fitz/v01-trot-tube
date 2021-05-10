@@ -8,6 +8,7 @@ import { storeService } from "src/fbase";
 
 import ViewsAndLikes from './ViewsAndLikes'
 import Comment from './Comment'
+import Loading from 'src/components/effect/Loading';
 
 function Video(props) {
   const { vid } = useParams();
@@ -189,7 +190,7 @@ function Video(props) {
 
   return (
     <Container key='video'>
-      {loaded && <>
+      {loaded ? <>
         <Box flex='0.6'>    
           <IframeBox>
             <Iframe 
@@ -250,7 +251,7 @@ function Video(props) {
             </>}
           </div>
         </Box>
-      </>}
+      </> : <><Loading /></>}
     </Container>
   )
 }

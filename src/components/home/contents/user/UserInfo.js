@@ -10,6 +10,7 @@ import { FcApprove } from 'react-icons/fc'
 import { GoGear } from 'react-icons/go'
 
 import UserEdit from './UserEdit';
+import Loading from 'src/components/effect/Loading';
 
 function UserInfo(props) {
   const { uid } = useParams();
@@ -82,7 +83,7 @@ function UserInfo(props) {
           </Container>
         ) : null}
         </>
-      ) : null}
+      ) : <><Loading /></>}
     </>
   )
 }

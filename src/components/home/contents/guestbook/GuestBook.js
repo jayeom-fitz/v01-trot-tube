@@ -6,6 +6,7 @@ import { storeService } from "src/fbase";
 
 import Write from './Write';
 import Comment from './Comment';
+import Loading from 'src/components/effect/Loading';
 
 function GuestBook(props) {
   const [loaded, setLoaded] = useState(false);
@@ -81,7 +82,7 @@ function GuestBook(props) {
 
   return (
     <Container id='guestbook'>
-    {loaded && <>
+    {loaded ? <>
       <Content>
         <Write user={props.user} addComment={addComment}/>
 
@@ -103,6 +104,8 @@ function GuestBook(props) {
         </div>
         }
       </Content>
+    </> : <>
+      <Loading />
     </>}
     </Container>
   )

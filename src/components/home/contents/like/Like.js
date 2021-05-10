@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { storeService } from "src/fbase";
 
 import LikeVideo from './LikeVideo';
+import Loading from 'src/components/effect/Loading';
 
 function Like(props) {
   const [loaded, setLoaded] = useState(false);
@@ -102,7 +103,7 @@ function Like(props) {
 
   return (
     <Container>
-      {loaded && <>
+      {loaded ? <>
         <Title>좋아요 누른 영상</Title>
 
         <Videos>
@@ -116,6 +117,8 @@ function Like(props) {
             <Button onClick={moreVideos}>더 보기</Button>
           </div>
         }
+      </> : <>
+        <Loading />
       </>}
     </Container>
   )

@@ -8,6 +8,7 @@ import { storeService } from "src/fbase";
 import PersonInfo from './PersonInfo';
 import TvProgram from './TvProgram';
 import Video from './Video';
+import Loading from 'src/components/effect/Loading';
 
 function Person(props) {
   const { pid } = useParams();
@@ -84,7 +85,7 @@ function Person(props) {
 
   return (
     <>
-    {loaded && person && <>
+    {loaded ? person && <>
       <Container>
         <PersonInfo 
           user={props.user} person={person} setPerson={setPerson}
@@ -111,6 +112,8 @@ function Person(props) {
           </Content>
         </Box>}
       </Container>
+    </> : <>
+      <Loading />
     </>}
     </>
   )

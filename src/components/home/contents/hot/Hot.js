@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { storeService } from "src/fbase";
 import VideoCard from './VideoCard';
+import Loading from 'src/components/effect/Loading';
 
 function Hot() {
   const [loaded, setLoaded] = useState(false);
@@ -79,7 +80,7 @@ function Hot() {
   }, [])
 
   return (
-    <>{loaded &&
+    <>{loaded ?
       <Container>
         <Box flex='0.5'>
           <Title>좋아요</Title>
@@ -95,7 +96,9 @@ function Hot() {
           }
         </Box>
       </Container>
-    }</>
+    :<>
+      <Loading />
+    </>}</>
   )
 }
 
