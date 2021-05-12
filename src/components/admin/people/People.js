@@ -7,6 +7,7 @@ import { storeService } from "src/fbase"
 
 import PeopleAdd from './PeopleAdd';
 import PersonCard from './PersonCard';
+import Loading from 'src/components/effect/Loading';
 
 function People() {
   const [loaded, setLoaded] = useState(false);
@@ -72,7 +73,7 @@ function People() {
             </div>
           </Container>
         </div>
-      : null}
+      : <Loading />}
     </>
   )
 }

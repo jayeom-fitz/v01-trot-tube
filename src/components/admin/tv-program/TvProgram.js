@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { storeService } from "src/fbase"
 
 import PeopleBox from './PeopleBox';
+import Loading from 'src/components/effect/Loading';
 
 function TvProgram() {
   const { id } = useParams();
@@ -75,9 +76,9 @@ function TvProgram() {
     })); setAddedPeople(pp); setPeople(arr);
   }
 
-  function init() {
-    getTvProgram(); 
-    getDirectories();
+  async function init() {
+    await getTvProgram(); 
+    await getDirectories();
     setLoaded(true)
   }
 
@@ -101,7 +102,7 @@ function TvProgram() {
 
   return (
     <>
-      {loaded && tvProgram &&
+      {loaded ? tvProgram &&
         <div style={{width:'100%'}}>
           <Container>
             <Title>TV 프로그램 관리 - {title} [{id}]</Title>
@@ -153,7 +154,7 @@ function TvProgram() {
             />            
           </Container>
         </div>
-      }
+      : <Loading />}
     </>
   )
 }

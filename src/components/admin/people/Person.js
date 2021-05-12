@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { storeService } from "src/fbase"
 
 import Avatar from "@material-ui/core/Avatar";
+import Loading from 'src/components/effect/Loading';
 
 function Person() {
   const { id } = useParams();
@@ -52,7 +53,7 @@ function Person() {
 
   return (
     <Container>
-      {loaded && person && <>
+      {loaded ? person && <>
         <Title>[ {name} ] 의 정보</Title>
         
         <Content>
@@ -91,7 +92,7 @@ function Person() {
         <div style={{textAlign:'center'}}>
           <Button onClick={() => onSave()}> 저장 </Button>
         </div>
-      </>}
+      </> : <Loading />}
     </Container>
   )
 }
