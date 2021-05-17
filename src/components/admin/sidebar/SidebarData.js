@@ -9,7 +9,7 @@ export const SidebarData = [
       },
       {
         title: '인물',
-        path: '/admin/character'
+        path: '/admin/characters'
       },
       {
         title: '유저',

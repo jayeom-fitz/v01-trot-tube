@@ -11,7 +11,9 @@ import TvProgramSlider from '../components/admin/tv-program/TvProgramSlider';
 
 import People from '../components/admin/people/People';
 import Person from '../components/admin/people/Person';
+
 import Users from 'src/components/admin/users/Users';
+import User from 'src/components/admin/users/User';
 
 function Admin(props) {
   const { startComponent } = useParams();
@@ -23,8 +25,9 @@ function Admin(props) {
   const switchComponent = (prop) => {
     switch(prop) {
       case 'administrators':
-      case 'character' :
+      case 'characters' :
       case 'users' : return <Users />
+      case 'user' : return <User />      
 
       case 'tv-program' : return <TvProgram />
       case 'tv-programs' : return <TvPrograms />
