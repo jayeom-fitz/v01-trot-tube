@@ -125,7 +125,6 @@ const Title = styled.h2`
   text-align: center;
   padding-bottom: 20px;
 `
-
 const BoxContainer = styled.div`
   display: flex;
   align-items: center;

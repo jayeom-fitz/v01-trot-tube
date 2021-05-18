@@ -25,8 +25,8 @@ function Admin(props) {
   const switchComponent = (prop) => {
     switch(prop) {
       case 'administrators':
-      case 'characters' :
-      case 'users' : return <Users />
+      case 'users' :
+      case 'banUsers' : return <Users />
       case 'user' : return <User />      
 
       case 'tv-program' : return <TvProgram />

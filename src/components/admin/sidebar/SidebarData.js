@@ -8,12 +8,12 @@ export const SidebarData = [
         path: '/admin/administrators'
       },
       {
-        title: '인물',
-        path: '/admin/characters'
+        title: '회원',
+        path: '/admin/users'
       },
       {
-        title: '유저',
-        path: '/admin/users'
+        title: '정지 회원',
+        path: '/admin/banUsers'
       },
     ]
   },

@@ -24,10 +24,10 @@ function Users() {
     switch(startComponent) {
       case 'administrators': 
         verified = 2; setTitle('관리자'); break;
-      case 'characters' :
-        verified = 1; setTitle('인물'); break;
       case 'users' : 
-        verified = 0; setTitle('유저'); break;
+        verified = 0; setTitle('회원'); break;
+      default : 
+        verified = -1; setTitle('금지 회원'); break;
     }
 
     await storeService.collection('users').where('verified', '==', verified)
@@ -50,7 +50,7 @@ function Users() {
 
   const onChange = (e) => {
     const value = e.target.value; setSearch(value);
-
+ 
     if(users.length === 0) return;
     var array = users.slice();
     for(var i=0; i<array.length; i++) {
@@ -75,17 +75,18 @@ function Users() {
                 <Column flex='0.2'>닉네임</Column>
                 <Column flex='0.3'>가입일</Column>
               </Line>
-              {users.length != 0 ? users.map((user) => 
-              <StyledLink key={user.id} to={`/admin/user/${user.id}`}>
-                <Line>
-                  <Column flex='0.2'>
-                    <StyledAvatar src={user.photoURL}/>
-                  </Column>
-                  <Column flex='0.3'>{user.id}</Column>
-                  <Column flex='0.2'>{user.nickname}</Column>
-                  <Column flex='0.3'>{dateToString(user.joinDate)}</Column>
-                </Line>
-              </StyledLink>) : <Line>{title}이(가) 없습니다</Line>}
+              {users.length != 0 ? users.map((user) => user.active && 
+                <StyledLink key={user.id} to={`/admin/user/${user.id}`}>
+                  <Line>
+                    <Column flex='0.2'>
+                      <StyledAvatar src={user.photoURL}/>
+                    </Column>
+                    <Column flex='0.3'>{user.id}</Column>
+                    <Column flex='0.2'>{user.nickname}</Column>
+                    <Column flex='0.3'>{dateToString(user.joinDate)}</Column>
+                  </Line>
+                </StyledLink>
+              ) : <Line>{title}이(가) 없습니다</Line>}
 
             </div>
           </div>
